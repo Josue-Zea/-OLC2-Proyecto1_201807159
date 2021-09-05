@@ -1,0 +1,399 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    DIV
+    ID
+    MAS
+    MENOS
+    POR
+
+Grammar
+
+Rule 0     S' -> init
+Rule 1     init -> instrucciones
+Rule 2     instrucciones -> instrucciones instruccion
+Rule 3     instrucciones -> instruccion
+Rule 4     instruccion -> ins_print fin_instruccion
+Rule 5     instruccion -> ins_println fin_instruccion
+Rule 6     instruccion -> COMENTARIO_VARIAS_LINEAS
+Rule 7     instruccion -> COMENTARIO_SIMPLE
+Rule 8     instruccion -> error PUNTOCOMA
+Rule 9     fin_instruccion -> PUNTOCOMA
+Rule 10    fin_instruccion -> <empty>
+Rule 11    ins_print -> RPRINT PARA expresion PARC
+Rule 12    ins_println -> RPRINTLN PARA expresion PARC
+Rule 13    expresion -> PARA expresion PARC
+Rule 14    expresion -> ENTERO
+Rule 15    expresion -> DECIMAL
+Rule 16    expresion -> CADENA
+Rule 17    expresion -> CHAR
+
+Terminals, with rules where they appear
+
+CADENA               : 16
+CHAR                 : 17
+COMENTARIO_SIMPLE    : 7
+COMENTARIO_VARIAS_LINEAS : 6
+DECIMAL              : 15
+DIV                  : 
+ENTERO               : 14
+ID                   : 
+MAS                  : 
+MENOS                : 
+PARA                 : 11 12 13
+PARC                 : 11 12 13
+POR                  : 
+PUNTOCOMA            : 8 9
+RPRINT               : 11
+RPRINTLN             : 12
+error                : 8
+
+Nonterminals, with rules where they appear
+
+expresion            : 11 12 13
+fin_instruccion      : 4 5
+init                 : 0
+ins_print            : 4
+ins_println          : 5
+instruccion          : 2 3
+instrucciones        : 1 2
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . init
+    (1) init -> . instrucciones
+    (2) instrucciones -> . instrucciones instruccion
+    (3) instrucciones -> . instruccion
+    (4) instruccion -> . ins_print fin_instruccion
+    (5) instruccion -> . ins_println fin_instruccion
+    (6) instruccion -> . COMENTARIO_VARIAS_LINEAS
+    (7) instruccion -> . COMENTARIO_SIMPLE
+    (8) instruccion -> . error PUNTOCOMA
+    (11) ins_print -> . RPRINT PARA expresion PARC
+    (12) ins_println -> . RPRINTLN PARA expresion PARC
+
+    COMENTARIO_VARIAS_LINEAS shift and go to state 6
+    COMENTARIO_SIMPLE shift and go to state 7
+    error           shift and go to state 8
+    RPRINT          shift and go to state 9
+    RPRINTLN        shift and go to state 10
+
+    init                           shift and go to state 1
+    instrucciones                  shift and go to state 2
+    instruccion                    shift and go to state 3
+    ins_print                      shift and go to state 4
+    ins_println                    shift and go to state 5
+
+state 1
+
+    (0) S' -> init .
+
+
+
+state 2
+
+    (1) init -> instrucciones .
+    (2) instrucciones -> instrucciones . instruccion
+    (4) instruccion -> . ins_print fin_instruccion
+    (5) instruccion -> . ins_println fin_instruccion
+    (6) instruccion -> . COMENTARIO_VARIAS_LINEAS
+    (7) instruccion -> . COMENTARIO_SIMPLE
+    (8) instruccion -> . error PUNTOCOMA
+    (11) ins_print -> . RPRINT PARA expresion PARC
+    (12) ins_println -> . RPRINTLN PARA expresion PARC
+
+    $end            reduce using rule 1 (init -> instrucciones .)
+    COMENTARIO_VARIAS_LINEAS shift and go to state 6
+    COMENTARIO_SIMPLE shift and go to state 7
+    error           shift and go to state 8
+    RPRINT          shift and go to state 9
+    RPRINTLN        shift and go to state 10
+
+    instruccion                    shift and go to state 11
+    ins_print                      shift and go to state 4
+    ins_println                    shift and go to state 5
+
+state 3
+
+    (3) instrucciones -> instruccion .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 3 (instrucciones -> instruccion .)
+    COMENTARIO_SIMPLE reduce using rule 3 (instrucciones -> instruccion .)
+    error           reduce using rule 3 (instrucciones -> instruccion .)
+    RPRINT          reduce using rule 3 (instrucciones -> instruccion .)
+    RPRINTLN        reduce using rule 3 (instrucciones -> instruccion .)
+    $end            reduce using rule 3 (instrucciones -> instruccion .)
+
+
+state 4
+
+    (4) instruccion -> ins_print . fin_instruccion
+    (9) fin_instruccion -> . PUNTOCOMA
+    (10) fin_instruccion -> .
+
+    PUNTOCOMA       shift and go to state 13
+    COMENTARIO_VARIAS_LINEAS reduce using rule 10 (fin_instruccion -> .)
+    COMENTARIO_SIMPLE reduce using rule 10 (fin_instruccion -> .)
+    error           reduce using rule 10 (fin_instruccion -> .)
+    RPRINT          reduce using rule 10 (fin_instruccion -> .)
+    RPRINTLN        reduce using rule 10 (fin_instruccion -> .)
+    $end            reduce using rule 10 (fin_instruccion -> .)
+
+    fin_instruccion                shift and go to state 12
+
+state 5
+
+    (5) instruccion -> ins_println . fin_instruccion
+    (9) fin_instruccion -> . PUNTOCOMA
+    (10) fin_instruccion -> .
+
+    PUNTOCOMA       shift and go to state 13
+    COMENTARIO_VARIAS_LINEAS reduce using rule 10 (fin_instruccion -> .)
+    COMENTARIO_SIMPLE reduce using rule 10 (fin_instruccion -> .)
+    error           reduce using rule 10 (fin_instruccion -> .)
+    RPRINT          reduce using rule 10 (fin_instruccion -> .)
+    RPRINTLN        reduce using rule 10 (fin_instruccion -> .)
+    $end            reduce using rule 10 (fin_instruccion -> .)
+
+    fin_instruccion                shift and go to state 14
+
+state 6
+
+    (6) instruccion -> COMENTARIO_VARIAS_LINEAS .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+    COMENTARIO_SIMPLE reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+    error           reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+    RPRINT          reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+    RPRINTLN        reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+    $end            reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+
+
+state 7
+
+    (7) instruccion -> COMENTARIO_SIMPLE .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+    COMENTARIO_SIMPLE reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+    error           reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+    RPRINT          reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+    RPRINTLN        reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+    $end            reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+
+
+state 8
+
+    (8) instruccion -> error . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 15
+
+
+state 9
+
+    (11) ins_print -> RPRINT . PARA expresion PARC
+
+    PARA            shift and go to state 16
+
+
+state 10
+
+    (12) ins_println -> RPRINTLN . PARA expresion PARC
+
+    PARA            shift and go to state 17
+
+
+state 11
+
+    (2) instrucciones -> instrucciones instruccion .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    COMENTARIO_SIMPLE reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    error           reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    RPRINT          reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    RPRINTLN        reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    $end            reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+
+
+state 12
+
+    (4) instruccion -> ins_print fin_instruccion .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
+    COMENTARIO_SIMPLE reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
+    error           reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
+    RPRINT          reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
+    RPRINTLN        reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
+    $end            reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
+
+
+state 13
+
+    (9) fin_instruccion -> PUNTOCOMA .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
+    COMENTARIO_SIMPLE reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
+    error           reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
+    RPRINT          reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
+    RPRINTLN        reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
+    $end            reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
+
+
+state 14
+
+    (5) instruccion -> ins_println fin_instruccion .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
+    COMENTARIO_SIMPLE reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
+    error           reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
+    RPRINT          reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
+    RPRINTLN        reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
+    $end            reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
+
+
+state 15
+
+    (8) instruccion -> error PUNTOCOMA .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 8 (instruccion -> error PUNTOCOMA .)
+    COMENTARIO_SIMPLE reduce using rule 8 (instruccion -> error PUNTOCOMA .)
+    error           reduce using rule 8 (instruccion -> error PUNTOCOMA .)
+    RPRINT          reduce using rule 8 (instruccion -> error PUNTOCOMA .)
+    RPRINTLN        reduce using rule 8 (instruccion -> error PUNTOCOMA .)
+    $end            reduce using rule 8 (instruccion -> error PUNTOCOMA .)
+
+
+state 16
+
+    (11) ins_print -> RPRINT PARA . expresion PARC
+    (13) expresion -> . PARA expresion PARC
+    (14) expresion -> . ENTERO
+    (15) expresion -> . DECIMAL
+    (16) expresion -> . CADENA
+    (17) expresion -> . CHAR
+
+    PARA            shift and go to state 18
+    ENTERO          shift and go to state 20
+    DECIMAL         shift and go to state 21
+    CADENA          shift and go to state 22
+    CHAR            shift and go to state 23
+
+    expresion                      shift and go to state 19
+
+state 17
+
+    (12) ins_println -> RPRINTLN PARA . expresion PARC
+    (13) expresion -> . PARA expresion PARC
+    (14) expresion -> . ENTERO
+    (15) expresion -> . DECIMAL
+    (16) expresion -> . CADENA
+    (17) expresion -> . CHAR
+
+    PARA            shift and go to state 18
+    ENTERO          shift and go to state 20
+    DECIMAL         shift and go to state 21
+    CADENA          shift and go to state 22
+    CHAR            shift and go to state 23
+
+    expresion                      shift and go to state 24
+
+state 18
+
+    (13) expresion -> PARA . expresion PARC
+    (13) expresion -> . PARA expresion PARC
+    (14) expresion -> . ENTERO
+    (15) expresion -> . DECIMAL
+    (16) expresion -> . CADENA
+    (17) expresion -> . CHAR
+
+    PARA            shift and go to state 18
+    ENTERO          shift and go to state 20
+    DECIMAL         shift and go to state 21
+    CADENA          shift and go to state 22
+    CHAR            shift and go to state 23
+
+    expresion                      shift and go to state 25
+
+state 19
+
+    (11) ins_print -> RPRINT PARA expresion . PARC
+
+    PARC            shift and go to state 26
+
+
+state 20
+
+    (14) expresion -> ENTERO .
+
+    PARC            reduce using rule 14 (expresion -> ENTERO .)
+
+
+state 21
+
+    (15) expresion -> DECIMAL .
+
+    PARC            reduce using rule 15 (expresion -> DECIMAL .)
+
+
+state 22
+
+    (16) expresion -> CADENA .
+
+    PARC            reduce using rule 16 (expresion -> CADENA .)
+
+
+state 23
+
+    (17) expresion -> CHAR .
+
+    PARC            reduce using rule 17 (expresion -> CHAR .)
+
+
+state 24
+
+    (12) ins_println -> RPRINTLN PARA expresion . PARC
+
+    PARC            shift and go to state 27
+
+
+state 25
+
+    (13) expresion -> PARA expresion . PARC
+
+    PARC            shift and go to state 28
+
+
+state 26
+
+    (11) ins_print -> RPRINT PARA expresion PARC .
+
+    PUNTOCOMA       reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+    COMENTARIO_VARIAS_LINEAS reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+    COMENTARIO_SIMPLE reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+    error           reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+    RPRINT          reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+    RPRINTLN        reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+    $end            reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+
+
+state 27
+
+    (12) ins_println -> RPRINTLN PARA expresion PARC .
+
+    PUNTOCOMA       reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+    COMENTARIO_VARIAS_LINEAS reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+    COMENTARIO_SIMPLE reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+    error           reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+    RPRINT          reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+    RPRINTLN        reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+    $end            reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+
+
+state 28
+
+    (13) expresion -> PARA expresion PARC .
+
+    PARC            reduce using rule 13 (expresion -> PARA expresion PARC .)
+
