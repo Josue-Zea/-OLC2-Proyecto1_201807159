@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'CADENA CHAR COMENTARIO_SIMPLE COMENTARIO_VARIAS_LINEAS DECIMAL DIV ENTERO ID MAS MENOS PARA PARC POR PUNTOCOMA RPRINT RPRINTLNinit            : instruccionesinstrucciones    : instrucciones instruccioninstrucciones    : instruccioninstruccion  : ins_print fin_instruccion\n                    | ins_println fin_instruccion\n                    | COMENTARIO_VARIAS_LINEAS\n                    | COMENTARIO_SIMPLE\n    instruccion        : error PUNTOCOMAfin_instruccion  : PUNTOCOMA \n                        | ins_print   : RPRINT PARA expresion PARCins_println   : RPRINTLN PARA expresion PARC expresion :   PARA expresion PARC expresion : ENTEROexpresion : DECIMALexpresion : CADENAexpresion : CHAR'
+_lr_signature = 'leftMASMENOSleftPORDIVMODrightUMENOSrightPOTCADENA CHAR COMENTARIO_SIMPLE COMENTARIO_VARIAS_LINEAS DECIMAL DIV ENTERO ID MAS MENOS MOD PARCLS PAROP POR POT PTOCOMA TK_PRINT TK_PRINTLNinit            : instruccionesinstrucciones    : instrucciones instruccioninstrucciones    : instruccioninstruccion  : ins_print\n                    | ins_println\n                    | COMENTARIO_VARIAS_LINEAS\n                    | COMENTARIO_SIMPLE\n    ins_print   : TK_PRINT PAROP expresion PARCLS PTOCOMAins_println   : TK_PRINTLN PAROP expresion PARCLS PTOCOMA\n    expresion : expresion MAS expresion\n            | expresion MENOS expresion\n            | expresion POR expresion\n            | expresion DIV expresion\n            | expresion POT expresion\n            | expresion MOD expresion\n    \n    expresion : MENOS expresion %prec UMENOS \n     expresion :   PAROP expresion PARCLS expresion : ENTEROexpresion : DECIMALexpresion : CADENAexpresion : CHAR'
     
-_lr_action_items = {'COMENTARIO_VARIAS_LINEAS':([0,2,3,4,5,6,7,11,12,13,14,15,26,27,],[6,6,-3,-10,-10,-6,-7,-2,-4,-9,-5,-8,-11,-12,]),'COMENTARIO_SIMPLE':([0,2,3,4,5,6,7,11,12,13,14,15,26,27,],[7,7,-3,-10,-10,-6,-7,-2,-4,-9,-5,-8,-11,-12,]),'error':([0,2,3,4,5,6,7,11,12,13,14,15,26,27,],[8,8,-3,-10,-10,-6,-7,-2,-4,-9,-5,-8,-11,-12,]),'RPRINT':([0,2,3,4,5,6,7,11,12,13,14,15,26,27,],[9,9,-3,-10,-10,-6,-7,-2,-4,-9,-5,-8,-11,-12,]),'RPRINTLN':([0,2,3,4,5,6,7,11,12,13,14,15,26,27,],[10,10,-3,-10,-10,-6,-7,-2,-4,-9,-5,-8,-11,-12,]),'$end':([1,2,3,4,5,6,7,11,12,13,14,15,26,27,],[0,-1,-3,-10,-10,-6,-7,-2,-4,-9,-5,-8,-11,-12,]),'PUNTOCOMA':([4,5,8,26,27,],[13,13,15,-11,-12,]),'PARA':([9,10,16,17,18,],[16,17,18,18,18,]),'ENTERO':([16,17,18,],[20,20,20,]),'DECIMAL':([16,17,18,],[21,21,21,]),'CADENA':([16,17,18,],[22,22,22,]),'CHAR':([16,17,18,],[23,23,23,]),'PARC':([19,20,21,22,23,24,25,28,],[26,-14,-15,-16,-17,27,28,-13,]),}
+_lr_action_items = {'COMENTARIO_VARIAS_LINEAS':([0,2,3,4,5,6,7,10,32,39,],[6,6,-3,-4,-5,-6,-7,-2,-8,-9,]),'COMENTARIO_SIMPLE':([0,2,3,4,5,6,7,10,32,39,],[7,7,-3,-4,-5,-6,-7,-2,-8,-9,]),'TK_PRINT':([0,2,3,4,5,6,7,10,32,39,],[8,8,-3,-4,-5,-6,-7,-2,-8,-9,]),'TK_PRINTLN':([0,2,3,4,5,6,7,10,32,39,],[9,9,-3,-4,-5,-6,-7,-2,-8,-9,]),'$end':([1,2,3,4,5,6,7,10,32,39,],[0,-1,-3,-4,-5,-6,-7,-2,-8,-9,]),'PAROP':([8,9,11,12,13,15,23,24,25,26,27,28,],[11,12,13,13,13,13,13,13,13,13,13,13,]),'MENOS':([11,12,13,14,15,16,17,18,19,20,21,23,24,25,26,27,28,29,31,33,34,35,36,37,38,],[15,15,15,24,15,-18,-19,-20,-21,24,24,15,15,15,15,15,15,-16,-17,-10,-11,-12,-13,-14,-15,]),'ENTERO':([11,12,13,15,23,24,25,26,27,28,],[16,16,16,16,16,16,16,16,16,16,]),'DECIMAL':([11,12,13,15,23,24,25,26,27,28,],[17,17,17,17,17,17,17,17,17,17,]),'CADENA':([11,12,13,15,23,24,25,26,27,28,],[18,18,18,18,18,18,18,18,18,18,]),'CHAR':([11,12,13,15,23,24,25,26,27,28,],[19,19,19,19,19,19,19,19,19,19,]),'PARCLS':([14,16,17,18,19,20,21,29,31,33,34,35,36,37,38,],[22,-18,-19,-20,-21,30,31,-16,-17,-10,-11,-12,-13,-14,-15,]),'MAS':([14,16,17,18,19,20,21,29,31,33,34,35,36,37,38,],[23,-18,-19,-20,-21,23,23,-16,-17,-10,-11,-12,-13,-14,-15,]),'POR':([14,16,17,18,19,20,21,29,31,33,34,35,36,37,38,],[25,-18,-19,-20,-21,25,25,-16,-17,25,25,-12,-13,-14,-15,]),'DIV':([14,16,17,18,19,20,21,29,31,33,34,35,36,37,38,],[26,-18,-19,-20,-21,26,26,-16,-17,26,26,-12,-13,-14,-15,]),'POT':([14,16,17,18,19,20,21,29,31,33,34,35,36,37,38,],[27,-18,-19,-20,-21,27,27,27,-17,27,27,27,27,27,27,]),'MOD':([14,16,17,18,19,20,21,29,31,33,34,35,36,37,38,],[28,-18,-19,-20,-21,28,28,-16,-17,28,28,-12,-13,-14,-15,]),'PTOCOMA':([22,30,],[32,39,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'init':([0,],[1,]),'instrucciones':([0,],[2,]),'instruccion':([0,2,],[3,11,]),'ins_print':([0,2,],[4,4,]),'ins_println':([0,2,],[5,5,]),'fin_instruccion':([4,5,],[12,14,]),'expresion':([16,17,18,],[19,24,25,]),}
+_lr_goto_items = {'init':([0,],[1,]),'instrucciones':([0,],[2,]),'instruccion':([0,2,],[3,10,]),'ins_print':([0,2,],[4,4,]),'ins_println':([0,2,],[5,5,]),'expresion':([11,12,13,15,23,24,25,26,27,28,],[14,20,21,29,33,34,35,36,37,38,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,21 +27,25 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> init","S'",1,None,None,None),
-  ('init -> instrucciones','init',1,'p_init','Gramatica.py',123),
-  ('instrucciones -> instrucciones instruccion','instrucciones',2,'p_instrucciones_instrucciones_instruccion','Gramatica.py',127),
-  ('instrucciones -> instruccion','instrucciones',1,'p_instrucciones_instruccion','Gramatica.py',135),
-  ('instruccion -> ins_print fin_instruccion','instruccion',2,'p_instruccion','Gramatica.py',144),
-  ('instruccion -> ins_println fin_instruccion','instruccion',2,'p_instruccion','Gramatica.py',145),
-  ('instruccion -> COMENTARIO_VARIAS_LINEAS','instruccion',1,'p_instruccion','Gramatica.py',146),
-  ('instruccion -> COMENTARIO_SIMPLE','instruccion',1,'p_instruccion','Gramatica.py',147),
-  ('instruccion -> error PUNTOCOMA','instruccion',2,'p_instruccion_error','Gramatica.py',154),
-  ('fin_instruccion -> PUNTOCOMA','fin_instruccion',1,'p_fin_instruccion','Gramatica.py',160),
-  ('fin_instruccion -> <empty>','fin_instruccion',0,'p_fin_instruccion','Gramatica.py',161),
-  ('ins_print -> RPRINT PARA expresion PARC','ins_print',4,'p_print_produ','Gramatica.py',170),
-  ('ins_println -> RPRINTLN PARA expresion PARC','ins_println',4,'p_println_produ','Gramatica.py',174),
-  ('expresion -> PARA expresion PARC','expresion',3,'p_expresion_agrupacion','Gramatica.py',180),
-  ('expresion -> ENTERO','expresion',1,'p_expresion_entero','Gramatica.py',184),
-  ('expresion -> DECIMAL','expresion',1,'p_primitivo_decimal','Gramatica.py',188),
-  ('expresion -> CADENA','expresion',1,'p_primitivo_cadena','Gramatica.py',192),
-  ('expresion -> CHAR','expresion',1,'p_primitivo_char','Gramatica.py',196),
+  ('init -> instrucciones','init',1,'p_init','Gramatica.py',138),
+  ('instrucciones -> instrucciones instruccion','instrucciones',2,'p_instrucciones_instrucciones_instruccion','Gramatica.py',142),
+  ('instrucciones -> instruccion','instrucciones',1,'p_instrucciones_instruccion','Gramatica.py',150),
+  ('instruccion -> ins_print','instruccion',1,'p_instruccion','Gramatica.py',159),
+  ('instruccion -> ins_println','instruccion',1,'p_instruccion','Gramatica.py',160),
+  ('instruccion -> COMENTARIO_VARIAS_LINEAS','instruccion',1,'p_instruccion','Gramatica.py',161),
+  ('instruccion -> COMENTARIO_SIMPLE','instruccion',1,'p_instruccion','Gramatica.py',162),
+  ('ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA','ins_print',5,'p_print_produ','Gramatica.py',176),
+  ('ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA','ins_println',5,'p_println_produ','Gramatica.py',180),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_binaria','Gramatica.py',187),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_binaria','Gramatica.py',188),
+  ('expresion -> expresion POR expresion','expresion',3,'p_expresion_binaria','Gramatica.py',189),
+  ('expresion -> expresion DIV expresion','expresion',3,'p_expresion_binaria','Gramatica.py',190),
+  ('expresion -> expresion POT expresion','expresion',3,'p_expresion_binaria','Gramatica.py',191),
+  ('expresion -> expresion MOD expresion','expresion',3,'p_expresion_binaria','Gramatica.py',192),
+  ('expresion -> MENOS expresion','expresion',2,'p_expresion_unaria','Gramatica.py',209),
+  ('expresion -> PAROP expresion PARCLS','expresion',3,'p_expresion_agrupacion','Gramatica.py',215),
+  ('expresion -> ENTERO','expresion',1,'p_expresion_entero','Gramatica.py',219),
+  ('expresion -> DECIMAL','expresion',1,'p_primitivo_decimal','Gramatica.py',223),
+  ('expresion -> CADENA','expresion',1,'p_primitivo_cadena','Gramatica.py',227),
+  ('expresion -> CHAR','expresion',1,'p_primitivo_char','Gramatica.py',231),
 ]

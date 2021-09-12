@@ -3,18 +3,20 @@ import re
 import os
 errores = []
 reservadas = {
-    'print'    : 'RPRINT',
-    'println'  : 'RPRINTLN',
+    'print'    : 'TK_PRINT',
+    'println'  : 'TK_PRINTLN',
 }
 
 tokens = [
-    'PARA',
-    'PARC',
+    'PAROP',
+    'PARCLS',
     'MAS',
     'MENOS',
     'POR',
     'DIV',
-    'PUNTOCOMA', 
+    'POT',
+    'MOD',
+    'PTOCOMA', 
     'DECIMAL',
     'ENTERO',
     'CADENA',
@@ -29,9 +31,11 @@ t_MAS           = r'\+'
 t_MENOS         = r'\-'
 t_POR           = r'\*'
 t_DIV           = r'\/'
-t_PARA         = r'\('
-t_PARC          = r'\)'
-t_PUNTOCOMA     = r'\;'
+t_POT           = r'\^'
+t_MOD           = r'\%'
+t_PAROP         = r'\('
+t_PARCLS        = r'\)'
+t_PTOCOMA       = r'\;'
 
 def t_DECIMAL(t): # retorna un Float64.
     r'\d+\.\d+'
@@ -89,14 +93,14 @@ def t_COMENTARIO_SIMPLE(t):
     t.lexer.lineno += 1
 
 # Caracteres ignorados
-t_ignore = " \t"
+t_ignore = " \t\r"
 
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
     
 def t_error(t):
-    errores.append(Exception("Lexico","Error léxico." + t.value[0] , t.lexer.lineno, find_column(input, t)))
+    errores.append(Exception("Lexico","Error lexico." + t.value[0], t.lexer.lineno, find_column(input, t)))
     t.lexer.skip(1)
 
 # Compute column.
@@ -111,12 +115,23 @@ import Interprete.ply.lex as lex
 lexer = lex.lex()
 
 # Asociacion
-# aqui va precedencia.
+precedence = (
+    #('right','IGUAL'),
+    #('left', 'OR'),
+    #('left', 'AND'),
+    #('left', 'UNOT'),
+    #('nonassoc', 'MAYORQUE', 'MENORQUE', 'MAYORIGUAL', 'MENORIGUAL', 'IGUALACION', 'DIFERENCIA'),
+    ('left', 'MAS', 'MENOS'),
+    ('left', 'POR', 'DIV', 'MOD'),
+    ('right', 'UMENOS'),
+    ('right', 'POT')
+)
 
 #Abstract
 from Interprete.Instrucciones.Print import Print
 from Interprete.Instrucciones.Println import Println
 from Interprete.Expresiones.Primitivos import Primitivos
+from Interprete.Expresiones.Aritmetica import Aritmetica
 from Interprete.TS.Tipo import *
 
 def p_init(t) :
@@ -141,8 +156,8 @@ def p_instrucciones_instruccion(t) :
 # --------------------------------------------- INSTRUCCION ---------------------------------------------
 
 def p_instruccion(t):
-    '''instruccion  : ins_print fin_instruccion
-                    | ins_println fin_instruccion
+    '''instruccion  : ins_print
+                    | ins_println
                     | COMENTARIO_VARIAS_LINEAS
                     | COMENTARIO_SIMPLE
     '''
@@ -151,33 +166,53 @@ def p_instruccion(t):
     
 
 def p_instruccion_error(t):
-    'instruccion        : error PUNTOCOMA'
-    errores.append(Exception("Sintáctico","Error Sintáctico." + str(t[1].value) , t.lineno(1), find_column(input, t.slice[1])))
+    errores.append(Exception("Sintáctico","Error Sintáctico." + t[1].value , t.lineno(1), find_column(input, t.slice[1])))
     t[0] = ""
-
-
-def p_fin_instruccion(t) :
-    '''fin_instruccion  : PUNTOCOMA 
-                        | '''
-
-    t[0] = None
-    
 
 
 ################################################ IMPRIMIR ################################################
 
 def p_print_produ(t) :
-    '''ins_print   : RPRINT PARA expresion PARC'''
+    '''ins_print   : TK_PRINT PAROP expresion PARCLS PTOCOMA'''
     t[0] = Print(t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_println_produ(t) :
-    '''ins_println   : RPRINTLN PARA expresion PARC'''
+    '''ins_println   : TK_PRINTLN PAROP expresion PARCLS PTOCOMA'''
     t[0] = Println(t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 ################################################ EXPRESION ################################################
 
+def p_expresion_binaria(t):
+    '''
+    expresion : expresion MAS expresion
+            | expresion MENOS expresion
+            | expresion POR expresion
+            | expresion DIV expresion
+            | expresion POT expresion
+            | expresion MOD expresion
+    '''
+    if t[2] == '+':
+        t[0] = Aritmetica(Operador_Aritmetico.SUMA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '-':
+        t[0] = Aritmetica(Operador_Aritmetico.RESTA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '*':
+        t[0] = Aritmetica(Operador_Aritmetico.MULTIPLICACION, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '/':
+        t[0] = Aritmetica(Operador_Aritmetico.DIVISION, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))   
+    elif t[2] == '^':
+        t[0] = Aritmetica(Operador_Aritmetico.POTENCIA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '%':
+        t[0] = Aritmetica(Operador_Aritmetico.MODULO, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))  
+
+def p_expresion_unaria(t):
+    '''
+    expresion : MENOS expresion %prec UMENOS 
+    '''
+    if t[1] == '-':
+        t[0] = Aritmetica(Operador_Aritmetico.UMENOS, t[2],None, t.lineno(1), find_column(input, t.slice[1]))
+
 def p_expresion_agrupacion(t):
-    ''' expresion :   PARA expresion PARC '''
+    ''' expresion :   PAROP expresion PARCLS '''
     t[0] = t[2]
 
 def p_expresion_entero(t):
@@ -219,25 +254,21 @@ def parse(inp) :
 from Interprete.TS.Arbol import Arbol
 from Interprete.TS.TablaSimbolos import TablaSimbolos
 
+def executeCode(entrada):
+    instrucciones = parse(str(entrada))
+    ast = Arbol(instrucciones)
+    TSGlobal = TablaSimbolos()
+    ast.set_tabla_ts_global(TSGlobal)
 
+    for error in errores:
+        ast.get_excepcion().append(error)
+        ast.actualizar_consola_salto(error.__str__())
 
-f = open("Entrada.txt","r")
-entrada = f.read()
-f.close()
-instrucciones = parse(str(entrada))
-ast = Arbol(instrucciones)
-TSGlobal = TablaSimbolos()
-ast.set_tabla_ts_global(TSGlobal)
-
-for error in errores:
-    ast.get_excepcion().append(error)
-    ast.actualizar_consola_salto(error.__str__())
-
-for pedo in ast.get_instruccion():
-    valor = pedo.interpretar(ast,TSGlobal)
-    if isinstance(valor, Exception):
-        ast.get_excepcion().append(valor)
-        ast.actualizar_consola_salto(valor.__str__())
-
-
-print(ast.get_consola())
+    for instr in ast.get_instruccion():
+        valor = instr.interpretar(ast,TSGlobal)
+        if isinstance(valor, Exception):
+            ast.get_excepcion().append(valor)
+            ast.actualizar_consola_salto(valor.__str__())
+    
+    #print(ast.get_consola())
+    return(ast.get_consola())

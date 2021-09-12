@@ -2,11 +2,7 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    DIV
     ID
-    MAS
-    MENOS
-    POR
 
 Grammar
 
@@ -14,45 +10,50 @@ Rule 0     S' -> init
 Rule 1     init -> instrucciones
 Rule 2     instrucciones -> instrucciones instruccion
 Rule 3     instrucciones -> instruccion
-Rule 4     instruccion -> ins_print fin_instruccion
-Rule 5     instruccion -> ins_println fin_instruccion
+Rule 4     instruccion -> ins_print
+Rule 5     instruccion -> ins_println
 Rule 6     instruccion -> COMENTARIO_VARIAS_LINEAS
 Rule 7     instruccion -> COMENTARIO_SIMPLE
-Rule 8     instruccion -> error PUNTOCOMA
-Rule 9     fin_instruccion -> PUNTOCOMA
-Rule 10    fin_instruccion -> <empty>
-Rule 11    ins_print -> RPRINT PARA expresion PARC
-Rule 12    ins_println -> RPRINTLN PARA expresion PARC
-Rule 13    expresion -> PARA expresion PARC
-Rule 14    expresion -> ENTERO
-Rule 15    expresion -> DECIMAL
-Rule 16    expresion -> CADENA
-Rule 17    expresion -> CHAR
+Rule 8     ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA
+Rule 9     ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA
+Rule 10    expresion -> expresion MAS expresion
+Rule 11    expresion -> expresion MENOS expresion
+Rule 12    expresion -> expresion POR expresion
+Rule 13    expresion -> expresion DIV expresion
+Rule 14    expresion -> expresion POT expresion
+Rule 15    expresion -> expresion MOD expresion
+Rule 16    expresion -> MENOS expresion
+Rule 17    expresion -> PAROP expresion PARCLS
+Rule 18    expresion -> ENTERO
+Rule 19    expresion -> DECIMAL
+Rule 20    expresion -> CADENA
+Rule 21    expresion -> CHAR
 
 Terminals, with rules where they appear
 
-CADENA               : 16
-CHAR                 : 17
+CADENA               : 20
+CHAR                 : 21
 COMENTARIO_SIMPLE    : 7
 COMENTARIO_VARIAS_LINEAS : 6
-DECIMAL              : 15
-DIV                  : 
-ENTERO               : 14
+DECIMAL              : 19
+DIV                  : 13
+ENTERO               : 18
 ID                   : 
-MAS                  : 
-MENOS                : 
-PARA                 : 11 12 13
-PARC                 : 11 12 13
-POR                  : 
-PUNTOCOMA            : 8 9
-RPRINT               : 11
-RPRINTLN             : 12
-error                : 8
+MAS                  : 10
+MENOS                : 11 16
+MOD                  : 15
+PARCLS               : 8 9 17
+PAROP                : 8 9 17
+POR                  : 12
+POT                  : 14
+PTOCOMA              : 8 9
+TK_PRINT             : 8
+TK_PRINTLN           : 9
+error                : 
 
 Nonterminals, with rules where they appear
 
-expresion            : 11 12 13
-fin_instruccion      : 4 5
+expresion            : 8 9 10 10 11 11 12 12 13 13 14 14 15 15 16 17
 init                 : 0
 ins_print            : 4
 ins_println          : 5
@@ -67,19 +68,17 @@ state 0
     (1) init -> . instrucciones
     (2) instrucciones -> . instrucciones instruccion
     (3) instrucciones -> . instruccion
-    (4) instruccion -> . ins_print fin_instruccion
-    (5) instruccion -> . ins_println fin_instruccion
+    (4) instruccion -> . ins_print
+    (5) instruccion -> . ins_println
     (6) instruccion -> . COMENTARIO_VARIAS_LINEAS
     (7) instruccion -> . COMENTARIO_SIMPLE
-    (8) instruccion -> . error PUNTOCOMA
-    (11) ins_print -> . RPRINT PARA expresion PARC
-    (12) ins_println -> . RPRINTLN PARA expresion PARC
+    (8) ins_print -> . TK_PRINT PAROP expresion PARCLS PTOCOMA
+    (9) ins_println -> . TK_PRINTLN PAROP expresion PARCLS PTOCOMA
 
     COMENTARIO_VARIAS_LINEAS shift and go to state 6
     COMENTARIO_SIMPLE shift and go to state 7
-    error           shift and go to state 8
-    RPRINT          shift and go to state 9
-    RPRINTLN        shift and go to state 10
+    TK_PRINT        shift and go to state 8
+    TK_PRINTLN      shift and go to state 9
 
     init                           shift and go to state 1
     instrucciones                  shift and go to state 2
@@ -97,22 +96,20 @@ state 2
 
     (1) init -> instrucciones .
     (2) instrucciones -> instrucciones . instruccion
-    (4) instruccion -> . ins_print fin_instruccion
-    (5) instruccion -> . ins_println fin_instruccion
+    (4) instruccion -> . ins_print
+    (5) instruccion -> . ins_println
     (6) instruccion -> . COMENTARIO_VARIAS_LINEAS
     (7) instruccion -> . COMENTARIO_SIMPLE
-    (8) instruccion -> . error PUNTOCOMA
-    (11) ins_print -> . RPRINT PARA expresion PARC
-    (12) ins_println -> . RPRINTLN PARA expresion PARC
+    (8) ins_print -> . TK_PRINT PAROP expresion PARCLS PTOCOMA
+    (9) ins_println -> . TK_PRINTLN PAROP expresion PARCLS PTOCOMA
 
     $end            reduce using rule 1 (init -> instrucciones .)
     COMENTARIO_VARIAS_LINEAS shift and go to state 6
     COMENTARIO_SIMPLE shift and go to state 7
-    error           shift and go to state 8
-    RPRINT          shift and go to state 9
-    RPRINTLN        shift and go to state 10
+    TK_PRINT        shift and go to state 8
+    TK_PRINTLN      shift and go to state 9
 
-    instruccion                    shift and go to state 11
+    instruccion                    shift and go to state 10
     ins_print                      shift and go to state 4
     ins_println                    shift and go to state 5
 
@@ -122,43 +119,32 @@ state 3
 
     COMENTARIO_VARIAS_LINEAS reduce using rule 3 (instrucciones -> instruccion .)
     COMENTARIO_SIMPLE reduce using rule 3 (instrucciones -> instruccion .)
-    error           reduce using rule 3 (instrucciones -> instruccion .)
-    RPRINT          reduce using rule 3 (instrucciones -> instruccion .)
-    RPRINTLN        reduce using rule 3 (instrucciones -> instruccion .)
+    TK_PRINT        reduce using rule 3 (instrucciones -> instruccion .)
+    TK_PRINTLN      reduce using rule 3 (instrucciones -> instruccion .)
     $end            reduce using rule 3 (instrucciones -> instruccion .)
 
 
 state 4
 
-    (4) instruccion -> ins_print . fin_instruccion
-    (9) fin_instruccion -> . PUNTOCOMA
-    (10) fin_instruccion -> .
+    (4) instruccion -> ins_print .
 
-    PUNTOCOMA       shift and go to state 13
-    COMENTARIO_VARIAS_LINEAS reduce using rule 10 (fin_instruccion -> .)
-    COMENTARIO_SIMPLE reduce using rule 10 (fin_instruccion -> .)
-    error           reduce using rule 10 (fin_instruccion -> .)
-    RPRINT          reduce using rule 10 (fin_instruccion -> .)
-    RPRINTLN        reduce using rule 10 (fin_instruccion -> .)
-    $end            reduce using rule 10 (fin_instruccion -> .)
+    COMENTARIO_VARIAS_LINEAS reduce using rule 4 (instruccion -> ins_print .)
+    COMENTARIO_SIMPLE reduce using rule 4 (instruccion -> ins_print .)
+    TK_PRINT        reduce using rule 4 (instruccion -> ins_print .)
+    TK_PRINTLN      reduce using rule 4 (instruccion -> ins_print .)
+    $end            reduce using rule 4 (instruccion -> ins_print .)
 
-    fin_instruccion                shift and go to state 12
 
 state 5
 
-    (5) instruccion -> ins_println . fin_instruccion
-    (9) fin_instruccion -> . PUNTOCOMA
-    (10) fin_instruccion -> .
+    (5) instruccion -> ins_println .
 
-    PUNTOCOMA       shift and go to state 13
-    COMENTARIO_VARIAS_LINEAS reduce using rule 10 (fin_instruccion -> .)
-    COMENTARIO_SIMPLE reduce using rule 10 (fin_instruccion -> .)
-    error           reduce using rule 10 (fin_instruccion -> .)
-    RPRINT          reduce using rule 10 (fin_instruccion -> .)
-    RPRINTLN        reduce using rule 10 (fin_instruccion -> .)
-    $end            reduce using rule 10 (fin_instruccion -> .)
+    COMENTARIO_VARIAS_LINEAS reduce using rule 5 (instruccion -> ins_println .)
+    COMENTARIO_SIMPLE reduce using rule 5 (instruccion -> ins_println .)
+    TK_PRINT        reduce using rule 5 (instruccion -> ins_println .)
+    TK_PRINTLN      reduce using rule 5 (instruccion -> ins_println .)
+    $end            reduce using rule 5 (instruccion -> ins_println .)
 
-    fin_instruccion                shift and go to state 14
 
 state 6
 
@@ -166,9 +152,8 @@ state 6
 
     COMENTARIO_VARIAS_LINEAS reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
     COMENTARIO_SIMPLE reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
-    error           reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
-    RPRINT          reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
-    RPRINTLN        reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+    TK_PRINT        reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
+    TK_PRINTLN      reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
     $end            reduce using rule 6 (instruccion -> COMENTARIO_VARIAS_LINEAS .)
 
 
@@ -178,222 +163,622 @@ state 7
 
     COMENTARIO_VARIAS_LINEAS reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
     COMENTARIO_SIMPLE reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
-    error           reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
-    RPRINT          reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
-    RPRINTLN        reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+    TK_PRINT        reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
+    TK_PRINTLN      reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
     $end            reduce using rule 7 (instruccion -> COMENTARIO_SIMPLE .)
 
 
 state 8
 
-    (8) instruccion -> error . PUNTOCOMA
+    (8) ins_print -> TK_PRINT . PAROP expresion PARCLS PTOCOMA
 
-    PUNTOCOMA       shift and go to state 15
+    PAROP           shift and go to state 11
 
 
 state 9
 
-    (11) ins_print -> RPRINT . PARA expresion PARC
+    (9) ins_println -> TK_PRINTLN . PAROP expresion PARCLS PTOCOMA
 
-    PARA            shift and go to state 16
+    PAROP           shift and go to state 12
 
 
 state 10
-
-    (12) ins_println -> RPRINTLN . PARA expresion PARC
-
-    PARA            shift and go to state 17
-
-
-state 11
 
     (2) instrucciones -> instrucciones instruccion .
 
     COMENTARIO_VARIAS_LINEAS reduce using rule 2 (instrucciones -> instrucciones instruccion .)
     COMENTARIO_SIMPLE reduce using rule 2 (instrucciones -> instrucciones instruccion .)
-    error           reduce using rule 2 (instrucciones -> instrucciones instruccion .)
-    RPRINT          reduce using rule 2 (instrucciones -> instrucciones instruccion .)
-    RPRINTLN        reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    TK_PRINT        reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    TK_PRINTLN      reduce using rule 2 (instrucciones -> instrucciones instruccion .)
     $end            reduce using rule 2 (instrucciones -> instrucciones instruccion .)
 
 
+state 11
+
+    (8) ins_print -> TK_PRINT PAROP . expresion PARCLS PTOCOMA
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
+
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
+
+    expresion                      shift and go to state 14
+
 state 12
 
-    (4) instruccion -> ins_print fin_instruccion .
+    (9) ins_println -> TK_PRINTLN PAROP . expresion PARCLS PTOCOMA
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    COMENTARIO_VARIAS_LINEAS reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
-    COMENTARIO_SIMPLE reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
-    error           reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
-    RPRINT          reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
-    RPRINTLN        reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
-    $end            reduce using rule 4 (instruccion -> ins_print fin_instruccion .)
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 20
 
 state 13
 
-    (9) fin_instruccion -> PUNTOCOMA .
+    (17) expresion -> PAROP . expresion PARCLS
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    COMENTARIO_VARIAS_LINEAS reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
-    COMENTARIO_SIMPLE reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
-    error           reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
-    RPRINT          reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
-    RPRINTLN        reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
-    $end            reduce using rule 9 (fin_instruccion -> PUNTOCOMA .)
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 21
 
 state 14
 
-    (5) instruccion -> ins_println fin_instruccion .
+    (8) ins_print -> TK_PRINT PAROP expresion . PARCLS PTOCOMA
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
 
-    COMENTARIO_VARIAS_LINEAS reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
-    COMENTARIO_SIMPLE reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
-    error           reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
-    RPRINT          reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
-    RPRINTLN        reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
-    $end            reduce using rule 5 (instruccion -> ins_println fin_instruccion .)
+    PARCLS          shift and go to state 22
+    MAS             shift and go to state 23
+    MENOS           shift and go to state 24
+    POR             shift and go to state 25
+    DIV             shift and go to state 26
+    POT             shift and go to state 27
+    MOD             shift and go to state 28
 
 
 state 15
 
-    (8) instruccion -> error PUNTOCOMA .
+    (16) expresion -> MENOS . expresion
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    COMENTARIO_VARIAS_LINEAS reduce using rule 8 (instruccion -> error PUNTOCOMA .)
-    COMENTARIO_SIMPLE reduce using rule 8 (instruccion -> error PUNTOCOMA .)
-    error           reduce using rule 8 (instruccion -> error PUNTOCOMA .)
-    RPRINT          reduce using rule 8 (instruccion -> error PUNTOCOMA .)
-    RPRINTLN        reduce using rule 8 (instruccion -> error PUNTOCOMA .)
-    $end            reduce using rule 8 (instruccion -> error PUNTOCOMA .)
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 29
 
 state 16
 
-    (11) ins_print -> RPRINT PARA . expresion PARC
-    (13) expresion -> . PARA expresion PARC
-    (14) expresion -> . ENTERO
-    (15) expresion -> . DECIMAL
-    (16) expresion -> . CADENA
-    (17) expresion -> . CHAR
+    (18) expresion -> ENTERO .
 
-    PARA            shift and go to state 18
-    ENTERO          shift and go to state 20
-    DECIMAL         shift and go to state 21
-    CADENA          shift and go to state 22
-    CHAR            shift and go to state 23
+    PARCLS          reduce using rule 18 (expresion -> ENTERO .)
+    MAS             reduce using rule 18 (expresion -> ENTERO .)
+    MENOS           reduce using rule 18 (expresion -> ENTERO .)
+    POR             reduce using rule 18 (expresion -> ENTERO .)
+    DIV             reduce using rule 18 (expresion -> ENTERO .)
+    POT             reduce using rule 18 (expresion -> ENTERO .)
+    MOD             reduce using rule 18 (expresion -> ENTERO .)
 
-    expresion                      shift and go to state 19
 
 state 17
 
-    (12) ins_println -> RPRINTLN PARA . expresion PARC
-    (13) expresion -> . PARA expresion PARC
-    (14) expresion -> . ENTERO
-    (15) expresion -> . DECIMAL
-    (16) expresion -> . CADENA
-    (17) expresion -> . CHAR
+    (19) expresion -> DECIMAL .
 
-    PARA            shift and go to state 18
-    ENTERO          shift and go to state 20
-    DECIMAL         shift and go to state 21
-    CADENA          shift and go to state 22
-    CHAR            shift and go to state 23
+    PARCLS          reduce using rule 19 (expresion -> DECIMAL .)
+    MAS             reduce using rule 19 (expresion -> DECIMAL .)
+    MENOS           reduce using rule 19 (expresion -> DECIMAL .)
+    POR             reduce using rule 19 (expresion -> DECIMAL .)
+    DIV             reduce using rule 19 (expresion -> DECIMAL .)
+    POT             reduce using rule 19 (expresion -> DECIMAL .)
+    MOD             reduce using rule 19 (expresion -> DECIMAL .)
 
-    expresion                      shift and go to state 24
 
 state 18
 
-    (13) expresion -> PARA . expresion PARC
-    (13) expresion -> . PARA expresion PARC
-    (14) expresion -> . ENTERO
-    (15) expresion -> . DECIMAL
-    (16) expresion -> . CADENA
-    (17) expresion -> . CHAR
+    (20) expresion -> CADENA .
 
-    PARA            shift and go to state 18
-    ENTERO          shift and go to state 20
-    DECIMAL         shift and go to state 21
-    CADENA          shift and go to state 22
-    CHAR            shift and go to state 23
+    PARCLS          reduce using rule 20 (expresion -> CADENA .)
+    MAS             reduce using rule 20 (expresion -> CADENA .)
+    MENOS           reduce using rule 20 (expresion -> CADENA .)
+    POR             reduce using rule 20 (expresion -> CADENA .)
+    DIV             reduce using rule 20 (expresion -> CADENA .)
+    POT             reduce using rule 20 (expresion -> CADENA .)
+    MOD             reduce using rule 20 (expresion -> CADENA .)
 
-    expresion                      shift and go to state 25
 
 state 19
 
-    (11) ins_print -> RPRINT PARA expresion . PARC
+    (21) expresion -> CHAR .
 
-    PARC            shift and go to state 26
+    PARCLS          reduce using rule 21 (expresion -> CHAR .)
+    MAS             reduce using rule 21 (expresion -> CHAR .)
+    MENOS           reduce using rule 21 (expresion -> CHAR .)
+    POR             reduce using rule 21 (expresion -> CHAR .)
+    DIV             reduce using rule 21 (expresion -> CHAR .)
+    POT             reduce using rule 21 (expresion -> CHAR .)
+    MOD             reduce using rule 21 (expresion -> CHAR .)
 
 
 state 20
 
-    (14) expresion -> ENTERO .
+    (9) ins_println -> TK_PRINTLN PAROP expresion . PARCLS PTOCOMA
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
 
-    PARC            reduce using rule 14 (expresion -> ENTERO .)
+    PARCLS          shift and go to state 30
+    MAS             shift and go to state 23
+    MENOS           shift and go to state 24
+    POR             shift and go to state 25
+    DIV             shift and go to state 26
+    POT             shift and go to state 27
+    MOD             shift and go to state 28
 
 
 state 21
 
-    (15) expresion -> DECIMAL .
+    (17) expresion -> PAROP expresion . PARCLS
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
 
-    PARC            reduce using rule 15 (expresion -> DECIMAL .)
+    PARCLS          shift and go to state 31
+    MAS             shift and go to state 23
+    MENOS           shift and go to state 24
+    POR             shift and go to state 25
+    DIV             shift and go to state 26
+    POT             shift and go to state 27
+    MOD             shift and go to state 28
 
 
 state 22
 
-    (16) expresion -> CADENA .
+    (8) ins_print -> TK_PRINT PAROP expresion PARCLS . PTOCOMA
 
-    PARC            reduce using rule 16 (expresion -> CADENA .)
+    PTOCOMA         shift and go to state 32
 
 
 state 23
 
-    (17) expresion -> CHAR .
+    (10) expresion -> expresion MAS . expresion
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    PARC            reduce using rule 17 (expresion -> CHAR .)
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 33
 
 state 24
 
-    (12) ins_println -> RPRINTLN PARA expresion . PARC
+    (11) expresion -> expresion MENOS . expresion
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    PARC            shift and go to state 27
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 34
 
 state 25
 
-    (13) expresion -> PARA expresion . PARC
+    (12) expresion -> expresion POR . expresion
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    PARC            shift and go to state 28
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 35
 
 state 26
 
-    (11) ins_print -> RPRINT PARA expresion PARC .
+    (13) expresion -> expresion DIV . expresion
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    PUNTOCOMA       reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
-    COMENTARIO_VARIAS_LINEAS reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
-    COMENTARIO_SIMPLE reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
-    error           reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
-    RPRINT          reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
-    RPRINTLN        reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
-    $end            reduce using rule 11 (ins_print -> RPRINT PARA expresion PARC .)
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 36
 
 state 27
 
-    (12) ins_println -> RPRINTLN PARA expresion PARC .
+    (14) expresion -> expresion POT . expresion
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    PUNTOCOMA       reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
-    COMENTARIO_VARIAS_LINEAS reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
-    COMENTARIO_SIMPLE reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
-    error           reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
-    RPRINT          reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
-    RPRINTLN        reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
-    $end            reduce using rule 12 (ins_println -> RPRINTLN PARA expresion PARC .)
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
 
+    expresion                      shift and go to state 37
 
 state 28
 
-    (13) expresion -> PARA expresion PARC .
+    (15) expresion -> expresion MOD . expresion
+    (10) expresion -> . expresion MAS expresion
+    (11) expresion -> . expresion MENOS expresion
+    (12) expresion -> . expresion POR expresion
+    (13) expresion -> . expresion DIV expresion
+    (14) expresion -> . expresion POT expresion
+    (15) expresion -> . expresion MOD expresion
+    (16) expresion -> . MENOS expresion
+    (17) expresion -> . PAROP expresion PARCLS
+    (18) expresion -> . ENTERO
+    (19) expresion -> . DECIMAL
+    (20) expresion -> . CADENA
+    (21) expresion -> . CHAR
 
-    PARC            reduce using rule 13 (expresion -> PARA expresion PARC .)
+    MENOS           shift and go to state 15
+    PAROP           shift and go to state 13
+    ENTERO          shift and go to state 16
+    DECIMAL         shift and go to state 17
+    CADENA          shift and go to state 18
+    CHAR            shift and go to state 19
+
+    expresion                      shift and go to state 38
+
+state 29
+
+    (16) expresion -> MENOS expresion .
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
+
+    PARCLS          reduce using rule 16 (expresion -> MENOS expresion .)
+    MAS             reduce using rule 16 (expresion -> MENOS expresion .)
+    MENOS           reduce using rule 16 (expresion -> MENOS expresion .)
+    POR             reduce using rule 16 (expresion -> MENOS expresion .)
+    DIV             reduce using rule 16 (expresion -> MENOS expresion .)
+    MOD             reduce using rule 16 (expresion -> MENOS expresion .)
+    POT             shift and go to state 27
+
+  ! POT             [ reduce using rule 16 (expresion -> MENOS expresion .) ]
+  ! MAS             [ shift and go to state 23 ]
+  ! MENOS           [ shift and go to state 24 ]
+  ! POR             [ shift and go to state 25 ]
+  ! DIV             [ shift and go to state 26 ]
+  ! MOD             [ shift and go to state 28 ]
+
+
+state 30
+
+    (9) ins_println -> TK_PRINTLN PAROP expresion PARCLS . PTOCOMA
+
+    PTOCOMA         shift and go to state 39
+
+
+state 31
+
+    (17) expresion -> PAROP expresion PARCLS .
+
+    PARCLS          reduce using rule 17 (expresion -> PAROP expresion PARCLS .)
+    MAS             reduce using rule 17 (expresion -> PAROP expresion PARCLS .)
+    MENOS           reduce using rule 17 (expresion -> PAROP expresion PARCLS .)
+    POR             reduce using rule 17 (expresion -> PAROP expresion PARCLS .)
+    DIV             reduce using rule 17 (expresion -> PAROP expresion PARCLS .)
+    POT             reduce using rule 17 (expresion -> PAROP expresion PARCLS .)
+    MOD             reduce using rule 17 (expresion -> PAROP expresion PARCLS .)
+
+
+state 32
+
+    (8) ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 8 (ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA .)
+    COMENTARIO_SIMPLE reduce using rule 8 (ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA .)
+    TK_PRINT        reduce using rule 8 (ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA .)
+    TK_PRINTLN      reduce using rule 8 (ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA .)
+    $end            reduce using rule 8 (ins_print -> TK_PRINT PAROP expresion PARCLS PTOCOMA .)
+
+
+state 33
+
+    (10) expresion -> expresion MAS expresion .
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
+
+    PARCLS          reduce using rule 10 (expresion -> expresion MAS expresion .)
+    MAS             reduce using rule 10 (expresion -> expresion MAS expresion .)
+    MENOS           reduce using rule 10 (expresion -> expresion MAS expresion .)
+    POR             shift and go to state 25
+    DIV             shift and go to state 26
+    POT             shift and go to state 27
+    MOD             shift and go to state 28
+
+  ! POR             [ reduce using rule 10 (expresion -> expresion MAS expresion .) ]
+  ! DIV             [ reduce using rule 10 (expresion -> expresion MAS expresion .) ]
+  ! POT             [ reduce using rule 10 (expresion -> expresion MAS expresion .) ]
+  ! MOD             [ reduce using rule 10 (expresion -> expresion MAS expresion .) ]
+  ! MAS             [ shift and go to state 23 ]
+  ! MENOS           [ shift and go to state 24 ]
+
+
+state 34
+
+    (11) expresion -> expresion MENOS expresion .
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
+
+    PARCLS          reduce using rule 11 (expresion -> expresion MENOS expresion .)
+    MAS             reduce using rule 11 (expresion -> expresion MENOS expresion .)
+    MENOS           reduce using rule 11 (expresion -> expresion MENOS expresion .)
+    POR             shift and go to state 25
+    DIV             shift and go to state 26
+    POT             shift and go to state 27
+    MOD             shift and go to state 28
+
+  ! POR             [ reduce using rule 11 (expresion -> expresion MENOS expresion .) ]
+  ! DIV             [ reduce using rule 11 (expresion -> expresion MENOS expresion .) ]
+  ! POT             [ reduce using rule 11 (expresion -> expresion MENOS expresion .) ]
+  ! MOD             [ reduce using rule 11 (expresion -> expresion MENOS expresion .) ]
+  ! MAS             [ shift and go to state 23 ]
+  ! MENOS           [ shift and go to state 24 ]
+
+
+state 35
+
+    (12) expresion -> expresion POR expresion .
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
+
+    PARCLS          reduce using rule 12 (expresion -> expresion POR expresion .)
+    MAS             reduce using rule 12 (expresion -> expresion POR expresion .)
+    MENOS           reduce using rule 12 (expresion -> expresion POR expresion .)
+    POR             reduce using rule 12 (expresion -> expresion POR expresion .)
+    DIV             reduce using rule 12 (expresion -> expresion POR expresion .)
+    MOD             reduce using rule 12 (expresion -> expresion POR expresion .)
+    POT             shift and go to state 27
+
+  ! POT             [ reduce using rule 12 (expresion -> expresion POR expresion .) ]
+  ! MAS             [ shift and go to state 23 ]
+  ! MENOS           [ shift and go to state 24 ]
+  ! POR             [ shift and go to state 25 ]
+  ! DIV             [ shift and go to state 26 ]
+  ! MOD             [ shift and go to state 28 ]
+
+
+state 36
+
+    (13) expresion -> expresion DIV expresion .
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
+
+    PARCLS          reduce using rule 13 (expresion -> expresion DIV expresion .)
+    MAS             reduce using rule 13 (expresion -> expresion DIV expresion .)
+    MENOS           reduce using rule 13 (expresion -> expresion DIV expresion .)
+    POR             reduce using rule 13 (expresion -> expresion DIV expresion .)
+    DIV             reduce using rule 13 (expresion -> expresion DIV expresion .)
+    MOD             reduce using rule 13 (expresion -> expresion DIV expresion .)
+    POT             shift and go to state 27
+
+  ! POT             [ reduce using rule 13 (expresion -> expresion DIV expresion .) ]
+  ! MAS             [ shift and go to state 23 ]
+  ! MENOS           [ shift and go to state 24 ]
+  ! POR             [ shift and go to state 25 ]
+  ! DIV             [ shift and go to state 26 ]
+  ! MOD             [ shift and go to state 28 ]
+
+
+state 37
+
+    (14) expresion -> expresion POT expresion .
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
+
+    PARCLS          reduce using rule 14 (expresion -> expresion POT expresion .)
+    MAS             reduce using rule 14 (expresion -> expresion POT expresion .)
+    MENOS           reduce using rule 14 (expresion -> expresion POT expresion .)
+    POR             reduce using rule 14 (expresion -> expresion POT expresion .)
+    DIV             reduce using rule 14 (expresion -> expresion POT expresion .)
+    MOD             reduce using rule 14 (expresion -> expresion POT expresion .)
+    POT             shift and go to state 27
+
+  ! POT             [ reduce using rule 14 (expresion -> expresion POT expresion .) ]
+  ! MAS             [ shift and go to state 23 ]
+  ! MENOS           [ shift and go to state 24 ]
+  ! POR             [ shift and go to state 25 ]
+  ! DIV             [ shift and go to state 26 ]
+  ! MOD             [ shift and go to state 28 ]
+
+
+state 38
+
+    (15) expresion -> expresion MOD expresion .
+    (10) expresion -> expresion . MAS expresion
+    (11) expresion -> expresion . MENOS expresion
+    (12) expresion -> expresion . POR expresion
+    (13) expresion -> expresion . DIV expresion
+    (14) expresion -> expresion . POT expresion
+    (15) expresion -> expresion . MOD expresion
+
+    PARCLS          reduce using rule 15 (expresion -> expresion MOD expresion .)
+    MAS             reduce using rule 15 (expresion -> expresion MOD expresion .)
+    MENOS           reduce using rule 15 (expresion -> expresion MOD expresion .)
+    POR             reduce using rule 15 (expresion -> expresion MOD expresion .)
+    DIV             reduce using rule 15 (expresion -> expresion MOD expresion .)
+    MOD             reduce using rule 15 (expresion -> expresion MOD expresion .)
+    POT             shift and go to state 27
+
+  ! POT             [ reduce using rule 15 (expresion -> expresion MOD expresion .) ]
+  ! MAS             [ shift and go to state 23 ]
+  ! MENOS           [ shift and go to state 24 ]
+  ! POR             [ shift and go to state 25 ]
+  ! DIV             [ shift and go to state 26 ]
+  ! MOD             [ shift and go to state 28 ]
+
+
+state 39
+
+    (9) ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA .
+
+    COMENTARIO_VARIAS_LINEAS reduce using rule 9 (ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA .)
+    COMENTARIO_SIMPLE reduce using rule 9 (ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA .)
+    TK_PRINT        reduce using rule 9 (ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA .)
+    TK_PRINTLN      reduce using rule 9 (ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA .)
+    $end            reduce using rule 9 (ins_println -> TK_PRINTLN PAROP expresion PARCLS PTOCOMA .)
 

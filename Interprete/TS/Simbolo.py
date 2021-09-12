@@ -1,12 +1,10 @@
 class Simbolo():
-
     def __init__(self, id, tipo, fila, columna, valor):
         self.id = id
         self.tipo = tipo
         self.fila = fila
         self.columna = columna
         self.valor = valor
-
 
     def get_id(self):
         return self.id
