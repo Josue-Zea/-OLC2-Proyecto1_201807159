@@ -18,3 +18,17 @@ class Operador_Aritmetico(Enum):
     POTENCIA        = 5
     MODULO          = 6
     UMENOS          = 7
+    COMA            = 8
+
+class Operador_Logico(Enum):
+    AND = 1
+    OR  = 2
+    NOT = 3
+
+class Operador_Relacional(Enum):
+    MENQ        = 1
+    MAYQ        = 2
+    MENEQUALS   = 3
+    MAYEQUALS   = 4
+    IGUALDAD    = 5
+    DIFERENCIA  = 6

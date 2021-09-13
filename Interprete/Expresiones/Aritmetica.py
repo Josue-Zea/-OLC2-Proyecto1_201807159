@@ -63,7 +63,11 @@ class Aritmetica(Instruccion):
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 self.tipo = Tipo.FLOAT64
                 return self.returnVal(self.OperacionIzq.tipo, izq) * self.returnVal(self.OperacionDer.tipo, der)
-
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.STRING:
+                self.tipo = Tipo.STRING
+                var = self.returnVal(self.OperacionIzq.tipo, izq)
+                var += self.returnVal(self.OperacionDer.tipo, der)
+                return var
             return Exception("Semantico", "Tipos erroneos en operación multiplicación.", self.fila, self.columna)
 
         elif self.operador == Operador_Aritmetico.DIVISION:
@@ -103,9 +107,19 @@ class Aritmetica(Instruccion):
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 self.tipo = Tipo.FLOAT64
                 return self.returnVal(self.OperacionIzq.tipo, izq) ** self.returnVal(self.OperacionDer.tipo, der)
-
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.INT64:
+                self.tipo = Tipo.STRING
+                var = self.returnVal(self.OperacionIzq.tipo, izq)
+                res=""
+                for i in range(self.returnVal(self.OperacionDer.tipo, der)):
+                    res+=var
+                return res
             return Exception("Semantico", "Tipos erroneos en operación potencia.", self.fila, self.columna)
 
+        elif self.operador == Operador_Aritmetico.COMA:
+            self.tipo = Tipo.STRING
+            return str(izq) + str(der)
+        
         elif self.operador == Operador_Aritmetico.MODULO:
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
                 self.tipo = Tipo.FLOAT64

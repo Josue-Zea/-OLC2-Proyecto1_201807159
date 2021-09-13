@@ -10,8 +10,6 @@ class Print(Instruccion):
     
     def interpretar(self, tree, tabla):
         value = self.expresion.interpretar(tree, tabla)
-
         if isinstance(value, Exception):
             return value
-
         tree.actualizar_consola_sin_salto(value)

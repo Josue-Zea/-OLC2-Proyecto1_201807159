@@ -5,6 +5,11 @@ errores = []
 reservadas = {
     'print'    : 'TK_PRINT',
     'println'  : 'TK_PRINTLN',
+    'Int64'    : 'TK_NATIVEINT64',
+    'Float64'  : 'TK_NATIVEFLOAT64',
+    'Bool'     : 'TK_NATIVEBOOL',
+    'Char'     : 'TK_NATIVECHAR',
+    'String'   : 'TK_NATIVESTRING',
 }
 
 tokens = [
@@ -16,7 +21,19 @@ tokens = [
     'DIV',
     'POT',
     'MOD',
-    'PTOCOMA', 
+    'PTOCOMA',
+    'MAYEQUALS',
+    'MENEQUALS',
+    'IGUALDAD',
+    'DIFERENCIA',
+    'MAYQ',
+    'MENQ',
+    'IGUAL',
+    'AND',
+    'OR',
+    'NOT',
+    'DOBLEPUNTO',
+    'COMA',
     'DECIMAL',
     'ENTERO',
     'CADENA',
@@ -36,6 +53,18 @@ t_MOD           = r'\%'
 t_PAROP         = r'\('
 t_PARCLS        = r'\)'
 t_PTOCOMA       = r'\;'
+t_MAYEQUALS     = r'>='
+t_MENEQUALS     = r'<='
+t_IGUALDAD      = r'=='
+t_DIFERENCIA    = r'!='
+t_MAYQ          = r'>'
+t_MENQ          = r'<'
+t_IGUAL         = r'='
+t_AND           = r'&&'
+t_OR            = r'\|\|'
+t_NOT           = r'!'
+t_DOBLEPUNTO    = r'::'
+t_COMA          = r','
 
 def t_DECIMAL(t): # retorna un Float64.
     r'\d+\.\d+'
@@ -116,11 +145,11 @@ lexer = lex.lex()
 
 # Asociacion
 precedence = (
-    #('right','IGUAL'),
-    #('left', 'OR'),
-    #('left', 'AND'),
-    #('left', 'UNOT'),
-    #('nonassoc', 'MAYORQUE', 'MENORQUE', 'MAYORIGUAL', 'MENORIGUAL', 'IGUALACION', 'DIFERENCIA'),
+    ('right','IGUAL'),
+    ('left', 'OR'),
+    ('left', 'AND'),
+    ('left', 'NOT'),
+    ('nonassoc', 'MAYQ', 'MENQ', 'MAYEQUALS', 'MENEQUALS', 'IGUALDAD', 'DIFERENCIA'),
     ('left', 'MAS', 'MENOS'),
     ('left', 'POR', 'DIV', 'MOD'),
     ('right', 'UMENOS'),
@@ -130,8 +159,13 @@ precedence = (
 #Abstract
 from Interprete.Instrucciones.Print import Print
 from Interprete.Instrucciones.Println import Println
+from Interprete.Instrucciones.Asignacion_declaracion import Asignacion
+
 from Interprete.Expresiones.Primitivos import Primitivos
 from Interprete.Expresiones.Aritmetica import Aritmetica
+from Interprete.Expresiones.Relacionales import Relacional
+from Interprete.Expresiones.Logicas import Logica
+from Interprete.Expresiones.Identificador import Identificador
 from Interprete.TS.Tipo import *
 
 def p_init(t) :
@@ -158,10 +192,10 @@ def p_instrucciones_instruccion(t) :
 def p_instruccion(t):
     '''instruccion  : ins_print
                     | ins_println
+                    | asignacion_ins
                     | COMENTARIO_VARIAS_LINEAS
                     | COMENTARIO_SIMPLE
     '''
-
     t[0] = t[1]
     
 
@@ -169,8 +203,35 @@ def p_instruccion_error(t):
     errores.append(Exception("Sintáctico","Error Sintáctico." + t[1].value , t.lineno(1), find_column(input, t.slice[1])))
     t[0] = ""
 
+########################################## ASIGNACION/DECLARACION ################################################
 
-################################################ IMPRIMIR ################################################
+def p_asignacion_ins(t):
+    'asignacion_ins    : ID IGUAL expresion PTOCOMA'
+    t[0] = Asignacion(t[1], t[3], None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_asignacion_ins2(t):
+    'asignacion_ins    : ID IGUAL expresion DOBLEPUNTO tipos_ins PTOCOMA'
+    t[0] = Asignacion(t[1], t[3], t[5],t.lineno(1), find_column(input, t.slice[1]))
+
+def p_tipos_ins(t):
+    """tipos_ins : TK_NATIVEINT64
+                | TK_NATIVEFLOAT64
+                | TK_NATIVECHAR
+                | TK_NATIVESTRING
+                | TK_NATIVEBOOL
+    """
+    if t[1] == "Int64":
+        t[0] = Tipo.INT64
+    elif t[1] == "Float64":
+        t[0] = Tipo.FLOAT64
+    elif t[1] == "Bool":
+        t[0] = Tipo.BOOLEAN
+    elif t[1] == "String":
+        t[0] = Tipo.STRING
+    elif t[1] == "Char":
+        t[0] = Tipo.CHAR
+
+################################################ PRINT ################################################
 
 def p_print_produ(t) :
     '''ins_print   : TK_PRINT PAROP expresion PARCLS PTOCOMA'''
@@ -182,7 +243,7 @@ def p_println_produ(t) :
 
 ################################################ EXPRESION ################################################
 
-def p_expresion_binaria(t):
+def p_exp_doble(t):
     '''
     expresion : expresion MAS expresion
             | expresion MENOS expresion
@@ -190,6 +251,15 @@ def p_expresion_binaria(t):
             | expresion DIV expresion
             | expresion POT expresion
             | expresion MOD expresion
+            | expresion MENQ expresion
+            | expresion MENEQUALS expresion
+            | expresion MAYQ expresion
+            | expresion MAYEQUALS expresion
+            | expresion IGUALDAD expresion
+            | expresion DIFERENCIA expresion
+            | expresion AND expresion
+            | expresion OR expresion
+            | expresion COMA expresion
     '''
     if t[2] == '+':
         t[0] = Aritmetica(Operador_Aritmetico.SUMA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
@@ -198,30 +268,57 @@ def p_expresion_binaria(t):
     elif t[2] == '*':
         t[0] = Aritmetica(Operador_Aritmetico.MULTIPLICACION, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '/':
-        t[0] = Aritmetica(Operador_Aritmetico.DIVISION, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))   
+        t[0] = Aritmetica(Operador_Aritmetico.DIVISION, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '^':
         t[0] = Aritmetica(Operador_Aritmetico.POTENCIA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '%':
-        t[0] = Aritmetica(Operador_Aritmetico.MODULO, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))  
+        t[0] = Aritmetica(Operador_Aritmetico.MODULO, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == ',':
+        t[0] = Aritmetica(Operador_Aritmetico.COMA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    #Relacionales
+    elif t[2] == '<':
+        t[0] = Relacional(Operador_Relacional.MENQ, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '<=':
+        t[0] = Relacional(Operador_Relacional.MENEQUALS, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '>':
+        t[0] = Relacional(Operador_Relacional.MAYQ, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '==':
+        t[0] = Relacional(Operador_Relacional.IGUALDAD, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '>=':
+        t[0] = Relacional(Operador_Relacional.MAYEQUALS, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '!=':
+        t[0] = Relacional(Operador_Relacional.DIFERENCIA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    #Logicas
+    elif t[2] == '&&':
+        t[0] = Logica(Operador_Logico.AND, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '||':
+        t[0] = Logica(Operador_Logico.OR, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
 
-def p_expresion_unaria(t):
+def p_exp_simple(t):
     '''
-    expresion : MENOS expresion %prec UMENOS 
+    expresion : MENOS expresion %prec UMENOS
+            | NOT expresion %prec NOT
     '''
     if t[1] == '-':
         t[0] = Aritmetica(Operador_Aritmetico.UMENOS, t[2],None, t.lineno(1), find_column(input, t.slice[1]))
+    elif t[1] == '!':
+         t[0] = Logica(Operador_Logico.NOT, t[2],None, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_expresion_agrupacion(t):
     ''' expresion :   PAROP expresion PARCLS '''
     t[0] = t[2]
 
-def p_expresion_entero(t):
+def p_exp_int(t):
     '''expresion : ENTERO'''
     t[0] = Primitivos(Tipo.INT64,t[1], t.lineno(1), find_column(input, t.slice[1]))
 
-def p_primitivo_decimal(t):
+def p_exp_float(t):
     '''expresion : DECIMAL'''
     t[0] = Primitivos(Tipo.FLOAT64, t[1], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_expresion_identificador(t):
+    '''expresion : ID'''
+    t[0] = Identificador(t[1], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_primitivo_cadena(t):
     '''expresion : CADENA'''
@@ -270,5 +367,4 @@ def executeCode(entrada):
             ast.get_excepcion().append(valor)
             ast.actualizar_consola_salto(valor.__str__())
     
-    #print(ast.get_consola())
     return(ast.get_consola())

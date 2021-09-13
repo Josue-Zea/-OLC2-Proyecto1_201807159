@@ -11,7 +11,7 @@ class TablaSimbolos:
     def setTabla(self, simbolo):# Para agregar un simbolo a la tabla
         if simbolo.id in self.tabla : # Si el simbolo ya existe retorna una exception
             return Exception("Semantico", "Variable " + simbolo.id + " ya existe", simbolo.fila, simbolo.columna)
-        else: # Se agrega un nuevo simbolo (Consultar si debe ser con .lower)
+        else: # Se agrega un nuevo simbolo (Consultar si debe ser con
             self.tabla[simbolo.id] = simbolo
             return None
 
@@ -26,7 +26,7 @@ class TablaSimbolos:
                     return None
         return None
 
-    def updateVal(self, simbolo): # Esta funcion se encarga de actualizar el valor del simbolo.
+    def actualizarTabla(self, simbolo): # Esta funcion se encarga de actualizar el valor del simbolo.
         tablaActual = self # Se posiciona en la cabeza.
         while tablaActual != None:
             if simbolo.id in tablaActual.tabla : # Si el simbolo lo encuentra lo va actualizar con sus sets.
@@ -34,7 +34,12 @@ class TablaSimbolos:
                     tablaActual.tabla[simbolo.id].set_valor(simbolo.get_valor())
                     tablaActual.tabla[simbolo.id].set_tipo(simbolo.get_tipo())
                     return None
-                return Exception("Semantico", "Tipo de dato Diferente en Asignacion", simbolo.get_fila(), simbolo.get_columna()) # si no encontro el dato en el diccionario retorna una excepcion.
+                else:
+                    tablaActual.tabla[simbolo.id].set_tipo(simbolo.get_tipo())
+                    tablaActual.tabla[simbolo.id].set_valor(simbolo.get_valor())
+                    tablaActual.tabla[simbolo.id].set_tipo(simbolo.get_tipo())
+                    return None
+                ##return Exception("Semantico", "Tipo de dato Diferente en Asignacion", simbolo.get_fila(), simbolo.get_columna())
             else:
                 tablaActual = tablaActual.anterior #si no encuentra el id, regresa al entorno anterior.
                 if tablaActual is None: # Condicion imprtante por si el anterior es null y no truene.

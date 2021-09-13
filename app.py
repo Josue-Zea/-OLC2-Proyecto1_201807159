@@ -15,7 +15,7 @@ app.config.from_object(__name__)
 codemirror = CodeMirror(app)
 
 class MyForm1(FlaskForm):
-    source_code = CodeMirrorField(language='julia', config={'lineNumbers': 'true','smartIndent': 'true'})
+    source_code = CodeMirrorField(language='julia', config={'lineNumbers': 'true', 'smartIndent': 'true'})
     submit = SubmitField('Submit')
     
 @app.route('/', methods = ['GET', 'POST'])
@@ -28,7 +28,6 @@ def index():
     else:
         salida = executeCode(text)
     return render_template('index.html',form=form, salida=salida)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
