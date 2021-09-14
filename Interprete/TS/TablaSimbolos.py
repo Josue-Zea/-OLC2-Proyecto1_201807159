@@ -11,7 +11,7 @@ class TablaSimbolos:
     def setTabla(self, simbolo):# Para agregar un simbolo a la tabla
         if simbolo.id in self.tabla : # Si el simbolo ya existe retorna una exception
             return Exception("Semantico", "Variable " + simbolo.id + " ya existe", simbolo.fila, simbolo.columna)
-        else: # Se agrega un nuevo simbolo (Consultar si debe ser con
+        else: # Se agrega un nuevo simbolo
             self.tabla[simbolo.id] = simbolo
             return None
 

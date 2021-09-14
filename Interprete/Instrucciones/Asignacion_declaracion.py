@@ -18,6 +18,7 @@ class Asignacion(Instruccion):
         
         if self.tipo != None and self.tipo != self.expresion.tipo:
             return Exception("Semantico", "Los tipos de variables no concuerdan: "+str(self.tipo)+"!="+str(self.expresion.tipo))
+        self.tipo = self.expresion.tipo
         var = ""
         simb = table.getTabla(self.identificador)
         simbolo = Simbolo(str(self.identificador),self.expresion.tipo, self.fila, self.columna, valor)

@@ -24,31 +24,31 @@ class Relacional(Instruccion):
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             # FLOAT64
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.INT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             # BOOLEAN
             elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             # CHAR
             elif self.OperacionIzq.tipo == Tipo.CHAR and self.OperacionDer.tipo == Tipo.CHAR:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             # STRING
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.INT64:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.INT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.FLOAT64:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.FLOAT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.BOOLEANO:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             return Exception("Semantico", "Tipo Erroneo de operacion para ==.", self.fila, self.columna)
 
@@ -58,31 +58,31 @@ class Relacional(Instruccion):
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             # DOUBLE
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.INT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             # BOOLEAN
             elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             # CHAR
             elif self.OperacionIzq.tipo == Tipo.CHAR and self.OperacionDer.tipo == Tipo.CHAR:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             # STRING
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.INT64:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.INT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != str(self.obtenerVal(self.OperacionDer.tipo, der))
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.FLOAT64:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.FLOAT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.BOOLEANO:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
-            elif self.OperacionIzq.tipo == Tipo.CADENA and self.OperacionDer.tipo == Tipo.CADENA:
+            elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             return Exception("Semantico", "Tipo Erroneo de operacion para =!.", self.fila, self.columna)
 

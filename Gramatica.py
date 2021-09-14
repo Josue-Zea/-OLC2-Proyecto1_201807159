@@ -5,11 +5,19 @@ errores = []
 reservadas = {
     'print'    : 'TK_PRINT',
     'println'  : 'TK_PRINTLN',
-    'Int64'    : 'TK_NATIVEINT64',
-    'Float64'  : 'TK_NATIVEFLOAT64',
-    'Bool'     : 'TK_NATIVEBOOL',
-    'Char'     : 'TK_NATIVECHAR',
-    'String'   : 'TK_NATIVESTRING',
+    'Int64'    : 'TK_INT64',
+    'Float64'  : 'TK_FLOAT64',
+    'Bool'     : 'TK_BOOL',
+    'Char'     : 'TK_CHAR',
+    'String'   : 'TK_STRING',
+    'if'       : 'TK_IF',
+    'elseif'   : 'TK_ELSEIF',
+    'else'     : 'TK_ELSE',
+    'end'      : 'TK_END',
+    'true'     : 'TK_TRUE',
+    'false'    : 'TK_FALSE',
+    'while'    : 'TK_WHILE',
+    'break'    : 'TK_BREAK'
 }
 
 tokens = [
@@ -86,7 +94,7 @@ def t_ENTERO(t): # retornar un Int64
 
 def t_ID(t): # sirve para las declaraciones o asignaciones.
      r'[a-zA-Z][a-zA-Z_0-9]*'
-     t.type = reservadas.get(t.value.lower(),'ID')
+     t.type = reservadas.get(t.value,'ID')
      return t
 
 def t_CADENA(t): # un string.
@@ -160,6 +168,11 @@ precedence = (
 from Interprete.Instrucciones.Print import Print
 from Interprete.Instrucciones.Println import Println
 from Interprete.Instrucciones.Asignacion_declaracion import Asignacion
+from Interprete.Instrucciones.If import If
+from Interprete.Instrucciones.While import While
+from Interprete.Instrucciones.Break import Break
+from Interprete.Instrucciones.Return import Return
+from Interprete.Instrucciones.Continue import Continue
 
 from Interprete.Expresiones.Primitivos import Primitivos
 from Interprete.Expresiones.Aritmetica import Aritmetica
@@ -192,7 +205,10 @@ def p_instrucciones_instruccion(t) :
 def p_instruccion(t):
     '''instruccion  : ins_print
                     | ins_println
-                    | asignacion_ins
+                    | ins_if
+                    | ins_break
+                    | ins_while
+                    | ins_asignacion
                     | COMENTARIO_VARIAS_LINEAS
                     | COMENTARIO_SIMPLE
     '''
@@ -203,32 +219,69 @@ def p_instruccion_error(t):
     errores.append(Exception("Sintáctico","Error Sintáctico." + t[1].value , t.lineno(1), find_column(input, t.slice[1])))
     t[0] = ""
 
+################################################# BREAK ###########################################################
+
+def p_break(t):
+    'ins_break : TK_BREAK PTOCOMA'
+    t[0] = Break(t.lineno(1), find_column(input, t.slice[1]));
+
+################################################# WHILE ##########################################################
+
+def p_sentencia_while(t) :
+    'ins_while     : TK_WHILE expresion instrucciones TK_END PTOCOMA'
+    t[0] = While(t[2], t[3], t.lineno(1), find_column(input, t.slice[1]))
+
+################################################## IF ############################################################
+def p_if(t):
+    'ins_if     : TK_IF expresion instrucciones TK_END PTOCOMA'
+    t[0] = If(t[2], t[3], None, None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_if_else(t):
+    'ins_if     : TK_IF expresion instrucciones TK_ELSE instrucciones TK_END PTOCOMA'
+    t[0] = If(t[2], t[3], t[5], None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_if_elseif(t):
+    'ins_if     : TK_IF expresion instrucciones ins_elseif TK_END PTOCOMA'
+    t[0] = If(t[2], t[3], None, t[4], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_if_elseif2(t):
+    'ins_elseif     : TK_ELSEIF expresion instrucciones'
+    t[0] = If(t[2], t[3], None, None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_if_elseif3(t):
+    'ins_elseif     : TK_ELSEIF expresion instrucciones ins_elseif'
+    t[0] = If(t[2], t[3], None, t[4], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_if_elseif4(t):
+    'ins_elseif     : TK_ELSEIF expresion instrucciones TK_ELSE instrucciones'
+    t[0] = If(t[2], t[3], t[5], None, t.lineno(1), find_column(input, t.slice[1]))
+
 ########################################## ASIGNACION/DECLARACION ################################################
 
 def p_asignacion_ins(t):
-    'asignacion_ins    : ID IGUAL expresion PTOCOMA'
+    'ins_asignacion    : ID IGUAL expresion PTOCOMA'
     t[0] = Asignacion(t[1], t[3], None, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_asignacion_ins2(t):
-    'asignacion_ins    : ID IGUAL expresion DOBLEPUNTO tipos_ins PTOCOMA'
-    t[0] = Asignacion(t[1], t[3], t[5],t.lineno(1), find_column(input, t.slice[1]))
+    'ins_asignacion    : ID IGUAL expresion DOBLEPUNTO tipos_ins PTOCOMA'
+    t[0] = Asignacion(t[1], t[3], t[5], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_tipos_ins(t):
-    """tipos_ins : TK_NATIVEINT64
-                | TK_NATIVEFLOAT64
-                | TK_NATIVECHAR
-                | TK_NATIVESTRING
-                | TK_NATIVEBOOL
+    """tipos_ins : TK_INT64
+                | TK_FLOAT64
+                | TK_CHAR
+                | TK_STRING
+                | TK_BOOL
     """
-    if t[1] == "Int64":
+    if t[1] == 'Int64':
         t[0] = Tipo.INT64
-    elif t[1] == "Float64":
+    elif t[1] == 'Float64':
         t[0] = Tipo.FLOAT64
-    elif t[1] == "Bool":
+    elif t[1] == 'Bool':
         t[0] = Tipo.BOOLEAN
-    elif t[1] == "String":
+    elif t[1] == 'String':
         t[0] = Tipo.STRING
-    elif t[1] == "Char":
+    elif t[1] == 'Char':
         t[0] = Tipo.CHAR
 
 ################################################ PRINT ################################################
@@ -311,6 +364,14 @@ def p_expresion_agrupacion(t):
 def p_exp_int(t):
     '''expresion : ENTERO'''
     t[0] = Primitivos(Tipo.INT64,t[1], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_exp_bool(t):
+    '''expresion : TK_TRUE
+                | TK_FALSE'''
+    if t[1] == 'true':
+        t[0] = Primitivos(Tipo.BOOLEANO, True, t.lineno(1), find_column(input, t.slice[1]))
+    elif t[1] == 'false':
+        t[0] = Primitivos(Tipo.BOOLEANO, False, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_exp_float(t):
     '''expresion : DECIMAL'''
