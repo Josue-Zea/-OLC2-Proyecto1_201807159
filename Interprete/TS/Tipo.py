@@ -18,7 +18,6 @@ class Operador_Aritmetico(Enum):
     POTENCIA        = 5
     MODULO          = 6
     UMENOS          = 7
-    COMA            = 8
 
 class Operador_Logico(Enum):
     AND = 1

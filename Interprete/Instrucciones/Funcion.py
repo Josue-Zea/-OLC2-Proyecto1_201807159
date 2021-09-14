@@ -8,7 +8,7 @@ from Interprete.Instrucciones.Continue import Continue
 
 class Funcion(Instruccion):
     def __init__(self, nombre, parametros, instrucciones, fila, columna):
-        self.nombre = nombre.lower()
+        self.nombre = nombre
         self.parametros = parametros
         self.instrucciones = instrucciones
         self.fila = fila

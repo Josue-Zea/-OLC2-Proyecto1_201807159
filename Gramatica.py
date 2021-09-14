@@ -19,6 +19,7 @@ reservadas = {
     'while'    : 'TK_WHILE',
     'break'    : 'TK_BREAK',
     'continue' : 'TK_CONTINUE',
+    'return'   : 'TK_RETURN',
     'function' : 'TK_FUNCTION'
 }
 
@@ -168,6 +169,7 @@ precedence = (
 
 #Abstract
 from Interprete.Instrucciones.Funcion import Funcion
+from Interprete.Instrucciones.Llamada import Llamada
 from Interprete.Instrucciones.Print import Print
 from Interprete.Instrucciones.Println import Println
 from Interprete.Instrucciones.Asignacion_declaracion import Asignacion
@@ -211,6 +213,7 @@ def p_instruccion(t):
                     | ins_if
                     | ins_break
                     | ins_continue
+                    | ins_return
                     | ins_while
                     | ins_asignacion
                     | ins_decla_funcion
@@ -221,7 +224,7 @@ def p_instruccion(t):
     t[0] = t[1]
     
 
-def p_instruccion_error(t):
+def p_error(t):
     errores.append(Exception("Sintáctico","Error Sintáctico." + t[1].value , t.lineno(1), find_column(input, t.slice[1])))
     t[0] = ""
 
@@ -271,11 +274,13 @@ def p_parametro(t) :
     'param     : ID DOBLEPUNTO tipos_ins'
     t[0] = {'tipoDato':t[3],'identificador':t[1]} # Se crea un diccionario tipoDato: tipo, identificador
 
-def p_parametro2(t) :
-    'param     : ID '
-    t[0] = {'tipoDato': None,'identificador':t[1]} # Se crea un diccionario tipoDato: tipo, identificador
+################################################# RETURN #########################################################
 
-################################################# CONTINUE ###########################################################
+def p_return(t):
+    'ins_return : TK_RETURN expresion PTOCOMA'    
+    t[0] = Return(t[2], t.lineno(1), find_column(input, t.slice[1]))
+
+################################################# CONTINUE #######################################################
 
 def p_continue(t):
     'ins_continue : TK_CONTINUE PTOCOMA'
@@ -374,7 +379,6 @@ def p_exp_doble(t):
             | expresion DIFERENCIA expresion
             | expresion AND expresion
             | expresion OR expresion
-            | expresion COMA expresion
     '''
     if t[2] == '+':
         t[0] = Aritmetica(Operador_Aritmetico.SUMA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
@@ -388,8 +392,7 @@ def p_exp_doble(t):
         t[0] = Aritmetica(Operador_Aritmetico.POTENCIA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '%':
         t[0] = Aritmetica(Operador_Aritmetico.MODULO, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
-    elif t[2] == ',':
-        t[0] = Aritmetica(Operador_Aritmetico.COMA, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
+    
     #Relacionales
     elif t[2] == '<':
         t[0] = Relacional(Operador_Relacional.MENQ, t[1],t[3], t.lineno(2), find_column(input, t.slice[2]))
@@ -419,9 +422,13 @@ def p_exp_simple(t):
     elif t[1] == '!':
          t[0] = Logica(Operador_Logico.NOT, t[2],None, t.lineno(1), find_column(input, t.slice[1]))
 
-def p_expresion_agrupacion(t):
+def p_expr_agrupacion(t):
     ''' expresion :   PAROP expresion PARCLS '''
     t[0] = t[2]
+
+def p_exp_llamada(t):
+    '''expresion : ins_llamada_funcion'''
+    t[0] = t[1]
 
 def p_exp_int(t):
     '''expresion : ENTERO'''
@@ -474,6 +481,43 @@ def parse(inp) :
 from Interprete.TS.Arbol import Arbol
 from Interprete.TS.TablaSimbolos import TablaSimbolos
 
+def declararNativas():
+    nombre = "toupper"
+    parametros = [{'tipoDato':Tipo.CADENA,'identificador':'toUpper##Param1'}]
+    instrucciones = []
+    toUpper = ToUpper(nombre, parametros, instrucciones, -1, -1)
+    ast.addFuncion(toUpper)     # GUARDAR LA FUNCION EN "MEMORIA" (EN EL ARBOL)
+
+    nombre = "tolower"
+    parametros = [{'tipoDato':Tipo.CADENA,'identificador':'toLower##Param1'}]
+    instrucciones = []
+    toLower = ToLower(nombre, parametros, instrucciones, -1, -1)
+    ast.addFuncion(toLower)     # GUARDAR LA FUNCION EN "MEMORIA" (EN EL ARBOL)
+
+    nombre = "length"
+    parametros = [{'tipoDato':Tipo.CADENA,'identificador':'length##Param1'}]
+    instrucciones = []
+    length = Length(nombre, parametros, instrucciones, -1, -1)
+    ast.addFuncion(length)     # GUARDAR LA FUNCION EN "MEMORIA" (EN EL ARBOL)
+
+    nombre = "truncate"
+    parametros = [{'tipoDato':Tipo.ENTERO,'identificador':'truncate##Param1'}]
+    instrucciones = []
+    truncate = Truncate(nombre, parametros, instrucciones, -1, -1)
+    ast.addFuncion(truncate)     # GUARDAR LA FUNCION EN "MEMORIA" (EN EL ARBOL)
+    
+    nombre = "round"
+    parametros = [{'tipoDato':Tipo.ENTERO,'identificador':'round##Param1'}]
+    instrucciones = []
+    rround = Round(nombre, parametros, instrucciones, -1, -1)
+    ast.addFuncion(rround)     # GUARDAR LA FUNCION EN "MEMORIA" (EN EL ARBOL)
+
+    nombre = "typeof"
+    parametros = [{'tipoDato':Tipo.NULO,'identificador':'typeOf##Param1'}]
+    instrucciones = []
+    typeOf = TypeOf(nombre, parametros, instrucciones, -1, -1)
+    ast.addFuncion(typeOf)     # GUARDAR LA FUNCION EN "MEMORIA" (EN EL ARBOL)
+
 def executeCode(entrada):
     instrucciones = parse(str(entrada))
     ast = Arbol(instrucciones)
@@ -485,9 +529,12 @@ def executeCode(entrada):
         ast.actualizar_consola_salto(error.__str__())
 
     for instr in ast.get_instruccion():
-        valor = instr.interpretar(ast,TSGlobal)
-        if isinstance(valor, Exception):
-            ast.get_excepcion().append(valor)
-            ast.actualizar_consola_salto(valor.__str__())
+        if isinstance(instr, Funcion):
+            ast.addFuncion(instr)
+        else:
+            valor = instr.interpretar(ast,TSGlobal)
+            if isinstance(valor, Exception):
+                ast.get_excepcion().append(valor)
+                ast.actualizar_consola_salto(valor.__str__())
     
     return(ast.get_consola())

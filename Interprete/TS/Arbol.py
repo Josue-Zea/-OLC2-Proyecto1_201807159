@@ -35,3 +35,16 @@ class Arbol():
 
     def set_tabla_ts_global(self, ts_global):
         self.tabla_ts_global = ts_global
+
+    ## Metodos para las funciones
+    def addFuncion(self, funcion):
+        self.funciones.append(funcion)
+
+    def get_funciones(self):
+        return self.funciones
+
+    def getFuncion(self, nombre):
+        for funcion in self.funciones:
+            if funcion.nombre == nombre:
+                return funcion
+        return None
