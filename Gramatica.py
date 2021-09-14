@@ -17,7 +17,9 @@ reservadas = {
     'true'     : 'TK_TRUE',
     'false'    : 'TK_FALSE',
     'while'    : 'TK_WHILE',
-    'break'    : 'TK_BREAK'
+    'break'    : 'TK_BREAK',
+    'continue' : 'TK_CONTINUE',
+    'function' : 'TK_FUNCTION'
 }
 
 tokens = [
@@ -165,6 +167,7 @@ precedence = (
 )
 
 #Abstract
+from Interprete.Instrucciones.Funcion import Funcion
 from Interprete.Instrucciones.Print import Print
 from Interprete.Instrucciones.Println import Println
 from Interprete.Instrucciones.Asignacion_declaracion import Asignacion
@@ -207,8 +210,11 @@ def p_instruccion(t):
                     | ins_println
                     | ins_if
                     | ins_break
+                    | ins_continue
                     | ins_while
                     | ins_asignacion
+                    | ins_decla_funcion
+                    | ins_llamada_funcion PTOCOMA
                     | COMENTARIO_VARIAS_LINEAS
                     | COMENTARIO_SIMPLE
     '''
@@ -218,6 +224,62 @@ def p_instruccion(t):
 def p_instruccion_error(t):
     errores.append(Exception("Sintáctico","Error Sintáctico." + t[1].value , t.lineno(1), find_column(input, t.slice[1])))
     t[0] = ""
+
+############################################## LLAMADA DE FUNCIONES ###############################################
+
+def p_llamada_de_funcion(t) :
+    'ins_llamada_funcion     : ID PAROP PARCLS'
+    t[0] = Llamada(t[1], [], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_llamada_de_fincion_parametros(t) :
+    'ins_llamada_funcion     : ID PAROP params_call PARCLS'
+    t[0] = Llamada(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_params_llamada(t) :
+    'params_call     : params_call COMA param_call'
+    t[1].append(t[3])
+    t[0] = t[1]
+    
+def p_parametros_llamadas_parametro_llamada(t) :
+    'params_call    : param_call'
+    t[0] = [t[1]]
+
+def p_parametro_llamada(t) :
+    'param_call     : expresion'
+    t[0] = t[1]
+
+########################################### DECLARACION DE FUNCIONES ##############################################
+
+def p_declara_functions(t):
+    'ins_decla_funcion : TK_FUNCTION ID PAROP PARCLS instrucciones TK_END PTOCOMA'
+    t[0] = Funcion(t[2], [], t[5], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_declara_functions2(t):
+    'ins_decla_funcion : TK_FUNCTION ID PAROP params PARCLS instrucciones TK_END PTOCOMA'
+    t[0] = Funcion(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_params_parametros(t) :
+    'params     : params COMA param'
+    t[1].append(t[3])
+    t[0] = t[1]
+    
+def p_params_parametro(t) :
+    'params    : param'
+    t[0] = [t[1]]
+
+def p_parametro(t) :
+    'param     : ID DOBLEPUNTO tipos_ins'
+    t[0] = {'tipoDato':t[3],'identificador':t[1]} # Se crea un diccionario tipoDato: tipo, identificador
+
+def p_parametro2(t) :
+    'param     : ID '
+    t[0] = {'tipoDato': None,'identificador':t[1]} # Se crea un diccionario tipoDato: tipo, identificador
+
+################################################# CONTINUE ###########################################################
+
+def p_continue(t):
+    'ins_continue : TK_CONTINUE PTOCOMA'
+    t[0] = Continue(t.lineno(1), find_column(input, t.slice[1]));
 
 ################################################# BREAK ###########################################################
 
