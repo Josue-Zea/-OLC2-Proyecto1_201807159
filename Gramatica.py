@@ -46,6 +46,7 @@ tokens = [
     'OR',
     'NOT',
     'DOBLEPUNTO',
+    'DOSPTOS',
     'COMA',
     'DECIMAL',
     'ENTERO',
@@ -77,6 +78,7 @@ t_AND           = r'\&\&'
 t_OR            = r'\|\|'
 t_NOT           = r'\!'
 t_DOBLEPUNTO    = r'\:\:'
+t_DOSPTOS       = r'\:'
 t_COMA          = r'\,'
 
 def t_DECIMAL(t): # retorna un Float64.
@@ -181,6 +183,7 @@ from Interprete.Instrucciones.Break import Break
 from Interprete.Instrucciones.Return import Return
 from Interprete.Instrucciones.Continue import Continue
 from Interprete.Instrucciones.Nativas import Nativas
+from Interprete.Instrucciones.For import For
 
 from Interprete.Expresiones.Primitivos import Primitivos
 from Interprete.Expresiones.Aritmetica import Aritmetica
@@ -221,7 +224,7 @@ def p_instruccion(t):
                     | ins_asignacion fin_instr
                     | ins_decla_funcion fin_instr
                     | ins_llamada_funcion fin_instr
-                    | ins_for
+                    | ins_for fin_instr
                     | COMENTARIO_VARIAS_LINEAS
                     | COMENTARIO_SIMPLE
     '''
@@ -243,8 +246,13 @@ def p_error(t):
 
 ##################################################### FOR #########################################################
 
-def p_instr_for(t):
-    'ins_for : TK_FOR ID TK_IN '
+def p_instr_for1(t):
+    '''ins_for : TK_FOR ID TK_IN expresion DOSPTOS expresion instrucciones TK_END
+                | TK_FOR ID TK_IN expresion instrucciones TK_END'''
+    if len(t) == 9:
+        t[0] = For(t[2], t[4], t[6], t[7],  t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 7:
+        t[0] = For(t[2], t[4], None, t[5],  t.lineno(1), find_column(input, t.slice[1]))
 
 ############################################## LLAMADA DE FUNCIONES ###############################################
 
