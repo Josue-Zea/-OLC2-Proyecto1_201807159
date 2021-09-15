@@ -115,10 +115,6 @@ class Aritmetica(Instruccion):
                     res+=var
                 return res
             return Exception("Semantico", "Tipos erroneos en operación potencia.", self.fila, self.columna)
-
-        elif self.operador == Operador_Aritmetico.COMA:
-            self.tipo = Tipo.STRING
-            return str(izq) + str(der)
         
         elif self.operador == Operador_Aritmetico.MODULO:
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
