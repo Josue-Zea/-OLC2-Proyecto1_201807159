@@ -1,24 +1,20 @@
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Tipo import Tipo
 from Interprete.TS.Exception import Exception
-from Interprete.TS.TablaSimbolos import TablaSimbolos
-from Interprete.Instrucciones.Break import Break
-from Interprete.Instrucciones.Return import Return
-from Interprete.Instrucciones.Continue import Continue
 
-class Funcion(Instruccion):
-    def __init__(self, nombre, parametros, instrucciones, fila, columna):
+class Struct(Instruccion):
+    def __init__(self, tipo, nombre, parametros, fila, columna):
+        self.tipo = tipo
         self.nombre = nombre
         self.parametros = parametros
-        self.instrucciones = instrucciones
         self.fila = fila
         self.columna = columna
-        self.tipo = Tipo.NULO
     
     def interpretar(self, tree, table):
         nuevaTabla = TablaSimbolos(table) 
         for instr in self.instrucciones:
             value = instr.interpretar(tree, nuevaTabla)
+
             if isinstance(value, Exception):
                 tree.get_excepcion().append(value)
                 tree.update_consola(value.__str__())

@@ -23,6 +23,8 @@ reservadas = {
     'function'  : 'TK_FUNCTION',
     'for'       : 'TK_FOR',
     'in'        : 'TK_IN',
+    'struct'    : 'TK_STRUCT'
+    'mutable'   : 'TK_MUTABLE'
 }
 
 tokens = [
@@ -225,6 +227,7 @@ def p_instruccion(t):
                     | ins_decla_funcion fin_instr
                     | ins_llamada_funcion fin_instr
                     | ins_for fin_instr
+                    | ins_create_struct fin_instr
                     | COMENTARIO_VARIAS_LINEAS
                     | COMENTARIO_SIMPLE
     '''
@@ -243,6 +246,30 @@ def p_error(t):
     print(t)
     errores.append(Exception("Sintáctico","Error Sintáctico." + str(t.value), t.lineno, find_column(input, t)))
     t = ""
+
+################################################# CREATE STRUCT ##################################################
+
+def p_instr_create_struct(t):
+    '''ins_create_struct : TK_STRUCT ID params_struct TK_END
+                        | TK_MUTABLE TK_STRUCT ID params_struct TK_END'''
+    if len(t) == 4:
+        t[0] = Struct(0, t[2], t[3], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 5:
+        t[0] = Struct(1, t[2], t[3], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_params_struct1(t) :
+    'params_struct     : params_struct COMA param_struct'
+    t[1].append(t[3])
+    t[0] = t[1]
+    
+def p_params_struct2(t) :
+    'params_struct    : param_struct'
+    t[0] = [t[1]]
+
+def p_params_struct3(t) :
+    '''param_struct     : ID PTOCOMA
+                    | tipos_ins'''
+    t[0] = t[1]
 
 ##################################################### FOR #########################################################
 

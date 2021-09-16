@@ -2,6 +2,7 @@ class Arbol():
     def __init__(self, instruccion):
         self.instruccion = instruccion
         self.funciones = []
+        self.structs = []
         self.excepcion = []
         self.consola = ""
         self.tabla_ts_global = None
@@ -47,4 +48,16 @@ class Arbol():
         for funcion in self.funciones:
             if funcion.nombre == nombre:
                 return funcion
+        return None
+    
+    def addStruct(self, struct):
+        self.structs.append(stuct)
+
+    def get_structs(self):
+        return self.structs
+
+    def getStruct(self, nombre):
+        for struct in self.structs:
+            if struct.nombre == nombre:
+                return struct
         return None
