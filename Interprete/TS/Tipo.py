@@ -1,7 +1,7 @@
 from enum import Enum
 
 class Tipo(Enum):
-    NULO     = 1
+    NOTHING  = 1
     INT64    = 2
     FLOAT64  = 3
     BOOLEANO = 4

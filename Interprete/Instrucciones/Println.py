@@ -19,10 +19,3 @@ class Println(Instruccion):
         for i in  ins:
             tree.actualizar_consola_sin_salto(i)
         tree.actualizar_consola_salto("")
-
-        """        for i in self.expresion: Codigo anterior
-            value = i.interpretar(tree, tabla)
-            if isinstance(value, Exception):
-                return value
-            tree.actualizar_consola_sin_salto(value)
-        tree.actualizar_consola_salto("")"""

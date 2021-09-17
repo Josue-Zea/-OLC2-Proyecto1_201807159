@@ -17,11 +17,3 @@ class Print(Instruccion):
                 return i
         for i in ins:
             tree.actualizar_consola_sin_salto(i)
-
-        """
-            for i in self.expresion:
-            value = i.interpretar(tree, tabla)
-            if isinstance(value, Exception):
-                return value
-            tree.actualizar_consola_sin_salto(value)
-        """

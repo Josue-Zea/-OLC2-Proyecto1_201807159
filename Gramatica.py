@@ -2,6 +2,7 @@ from Interprete.TS.Exception import Exception
 import re
 import os
 errores = []
+structs = []
 reservadas = {
     'print'     : 'TK_PRINT',
     'println'   : 'TK_PRINTLN',
@@ -23,8 +24,9 @@ reservadas = {
     'function'  : 'TK_FUNCTION',
     'for'       : 'TK_FOR',
     'in'        : 'TK_IN',
-    'struct'    : 'TK_STRUCT'
-    'mutable'   : 'TK_MUTABLE'
+    'struct'    : 'TK_STRUCT',
+    'mutable'   : 'TK_MUTABLE',
+    'nothing'   : 'TK_NOTHING'
 }
 
 tokens = [
@@ -49,14 +51,13 @@ tokens = [
     'NOT',
     'DOBLEPUNTO',
     'DOSPTOS',
+    'PTO',
     'COMA',
     'DECIMAL',
     'ENTERO',
     'CADENA',
     'CHAR',
-    'ID',
-    'COMENTARIO_SIMPLE',
-    'COMENTARIO_VARIAS_LINEAS',
+    'ID'
 ] + list(reservadas.values())
 
 # Tokens
@@ -82,6 +83,7 @@ t_NOT           = r'\!'
 t_DOBLEPUNTO    = r'\:\:'
 t_DOSPTOS       = r'\:'
 t_COMA          = r'\,'
+t_PTO           = r'\.'
 
 def t_DECIMAL(t): # retorna un Float64.
     r'\d+\.\d+'
@@ -130,7 +132,7 @@ def t_CHAR(t): # es un caracter.
 
 # comentario de varias lineas //...
 def t_COMENTARIO_VARIAS_LINEAS(t):
-    r'\#\=(.|\n)*?\=\#'
+    r'\#=(.|\n)*?=\#'
     t.lexer.lineno += t.value.count("\n") 
 
 # Comentario simple //...
@@ -186,6 +188,11 @@ from Interprete.Instrucciones.Return import Return
 from Interprete.Instrucciones.Continue import Continue
 from Interprete.Instrucciones.Nativas import Nativas
 from Interprete.Instrucciones.For import For
+from Interprete.Instrucciones.Plantilla_struct import Plantilla_struct
+from Interprete.Instrucciones.Struct import Struct
+from Interprete.Instrucciones.Llamada_struct import Llamada_struct
+from Interprete.Instrucciones.Llamada_atributo_struct import Llamada_atributo_struct
+from Interprete.Instrucciones.Asignar_valor_var_struct import Asignar_valor_var_struct
 
 from Interprete.Expresiones.Primitivos import Primitivos
 from Interprete.Expresiones.Aritmetica import Aritmetica
@@ -216,50 +223,53 @@ def p_instrucciones_instruccion(t) :
 # --------------------------------------------- INSTRUCCION ---------------------------------------------
 
 def p_instruccion(t):
-    '''instruccion  : ins_print fin_instr
-                    | ins_println fin_instr
-                    | ins_if fin_instr
-                    | ins_break fin_instr
-                    | ins_continue fin_instr
-                    | ins_return fin_instr
-                    | ins_while fin_instr
-                    | ins_asignacion fin_instr
-                    | ins_decla_funcion fin_instr
-                    | ins_llamada_funcion fin_instr
-                    | ins_for fin_instr
-                    | ins_create_struct fin_instr
-                    | COMENTARIO_VARIAS_LINEAS
-                    | COMENTARIO_SIMPLE
+    '''instruccion  : ins_print
+                    | ins_println
+                    | ins_if
+                    | ins_break
+                    | ins_continue
+                    | ins_return
+                    | ins_while
+                    | ins_asignacion
+                    | ins_decla_funcion
+                    | ins_llamada_funcion
+                    | ins_for
+                    | ins_declarate_struct
+                    | ins_create_struct
+                    | ins_cambio_var_strct
     '''
     t[0] = t[1]
-    
-def p_finstr(t):
-    '''fin_instr : PTOCOMA
-                | '''
-    if len(t) == 2:
-        t[0] = -1
-    elif len(t) == 1:
-        t[0] = None
 
 def p_error(t):
     'instruccion : error PTOCOMA'
-    print(t)
     errores.append(Exception("Sintáctico","Error Sintáctico." + str(t.value), t.lineno, find_column(input, t)))
     t = ""
 
-################################################# CREATE STRUCT ##################################################
+######################################### ASIGNAR VALOR A VARIABLE DE STRUCT ######################################
+
+def p_ins_cambio_var_strct(t):
+    'ins_cambio_var_strct : ID PTO ID IGUAL expresion PTOCOMA'
+    t[0] = Asignar_valor_var_struct(t[1], t[3], t[5],  t.lineno(1), find_column(input, t.slice[1]))
+
+################################################## CREATE STRUCT ##################################################
 
 def p_instr_create_struct(t):
-    '''ins_create_struct : TK_STRUCT ID params_struct TK_END
-                        | TK_MUTABLE TK_STRUCT ID params_struct TK_END'''
-    if len(t) == 4:
-        t[0] = Struct(0, t[2], t[3], t.lineno(1), find_column(input, t.slice[1]))
-    elif len(t) == 5:
-        t[0] = Struct(1, t[2], t[3], t.lineno(1), find_column(input, t.slice[1]))
+    'ins_create_struct : ID IGUAL ID PAROP params_call PARCLS PTOCOMA'
+    t[0] = Llamada_struct(t[1], t[3], t[5] , t.lineno(1), find_column(input, t.slice[1]))
+
+################################################# DECLARATE STRUCT ################################################
+
+def p_instr_declarate_struct(t):
+    '''ins_declarate_struct : TK_STRUCT ID params_struct TK_END PTOCOMA
+                        | TK_MUTABLE TK_STRUCT ID params_struct TK_END PTOCOMA'''
+    if len(t) == 6:
+        t[0] = Plantilla_struct(0, t[2], t[3], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 7:
+        t[0] = Plantilla_struct(1, t[3], t[4], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_params_struct1(t) :
-    'params_struct     : params_struct COMA param_struct'
-    t[1].append(t[3])
+    'params_struct     : params_struct param_struct'
+    t[1].append(t[2])
     t[0] = t[1]
     
 def p_params_struct2(t) :
@@ -267,15 +277,18 @@ def p_params_struct2(t) :
     t[0] = [t[1]]
 
 def p_params_struct3(t) :
-    '''param_struct     : ID PTOCOMA
-                    | tipos_ins'''
-    t[0] = t[1]
+    '''param_struct     : ID DOBLEPUNTO tipos_ins PTOCOMA
+                        | ID PTOCOMA'''
+    if len(t) == 5:
+        t[0] = {'tipoDato':t[3],'identificador':t[1]}
+    elif len(t) == 3:
+        t[0] = {'tipoDato':any,'identificador':t[1]}
 
 ##################################################### FOR #########################################################
 
 def p_instr_for1(t):
-    '''ins_for : TK_FOR ID TK_IN expresion DOSPTOS expresion instrucciones TK_END
-                | TK_FOR ID TK_IN expresion instrucciones TK_END'''
+    '''ins_for : TK_FOR ID TK_IN expresion DOSPTOS expresion instrucciones TK_END PTOCOMA
+                | TK_FOR ID TK_IN expresion instrucciones TK_END PTOCOMA'''
     if len(t) == 9:
         t[0] = For(t[2], t[4], t[6], t[7],  t.lineno(1), find_column(input, t.slice[1]))
     elif len(t) == 7:
@@ -284,11 +297,11 @@ def p_instr_for1(t):
 ############################################## LLAMADA DE FUNCIONES ###############################################
 
 def p_llamada_de_funcion(t) :
-    'ins_llamada_funcion     : ID PAROP PARCLS'
+    'ins_llamada_funcion     : ID PAROP PARCLS PTOCOMA'
     t[0] = Llamada(t[1], [], t.lineno(1), find_column(input, t.slice[1]))
 
-def p_llamada_de_fincion_parametros(t) :
-    'ins_llamada_funcion     : ID PAROP params_call PARCLS'
+def p_llamada_de_funcion_parametros(t) :
+    'ins_llamada_funcion     : ID PAROP params_call PARCLS PTOCOMA'
     if t[1] == 'log' or t[1] =='log10' or t[1] =='sin' or t[1] == 'cos'or t[1] =='tan'or t[1] =='sqrt'or t[1] =='parse'or t[1] =='trunc'or t[1] =='float'or t[1] =='string' or t[1] =='push'or t[1] =='pop'or t[1] =='length' or t[1] =='typeof' or t[1] =='uppercase' or t[1] =='lowercase':
         t[0] = Nativas(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
     else:
@@ -311,11 +324,11 @@ def p_parametro_llamada(t) :
 ########################################### DECLARACION DE FUNCIONES ##############################################
 
 def p_declara_functions(t):
-    'ins_decla_funcion : TK_FUNCTION ID PAROP PARCLS instrucciones TK_END '
+    'ins_decla_funcion : TK_FUNCTION ID PAROP PARCLS instrucciones TK_END PTOCOMA'
     t[0] = Funcion(t[2], [], t[5], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_declara_functions2(t):
-    'ins_decla_funcion : TK_FUNCTION ID PAROP params PARCLS instrucciones TK_END '
+    'ins_decla_funcion : TK_FUNCTION ID PAROP params PARCLS instrucciones TK_END PTOCOMA'
     t[0] = Funcion(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_params_parametros(t) :
@@ -329,43 +342,43 @@ def p_params_parametro(t) :
 
 def p_parametro(t) :
     'param     : ID DOBLEPUNTO tipos_ins'
-    t[0] = {'tipoDato':t[3],'identificador':t[1]} # Se crea un diccionario tipoDato: tipo, identificador
+    t[0] = {'tipoDato':t[3],'identificador':t[1]}
 
 ################################################# RETURN #########################################################
 
 def p_return(t):
-    'ins_return : TK_RETURN expresion '    
+    'ins_return : TK_RETURN expresion PTOCOMA'    
     t[0] = Return(t[2], t.lineno(1), find_column(input, t.slice[1]))
 
 ################################################# CONTINUE #######################################################
 
 def p_continue(t):
-    'ins_continue : TK_CONTINUE '
+    'ins_continue : TK_CONTINUE PTOCOMA'
     t[0] = Continue(t.lineno(1), find_column(input, t.slice[1]));
 
 ################################################# BREAK ###########################################################
 
 def p_break(t):
-    'ins_break : TK_BREAK '
+    'ins_break : TK_BREAK PTOCOMA'
     t[0] = Break(t.lineno(1), find_column(input, t.slice[1]));
 
 ################################################# WHILE ##########################################################
 
 def p_sentencia_while(t) :
-    'ins_while     : TK_WHILE expresion instrucciones TK_END '
+    'ins_while     : TK_WHILE expresion instrucciones TK_END PTOCOMA'
     t[0] = While(t[2], t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 ################################################## IF ############################################################
 def p_if(t):
-    'ins_if     : TK_IF expresion instrucciones TK_END'
+    'ins_if     : TK_IF expresion instrucciones TK_END PTOCOMA'
     t[0] = If(t[2], t[3], None, None, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_if_else(t):
-    'ins_if     : TK_IF expresion instrucciones TK_ELSE instrucciones TK_END '
+    'ins_if     : TK_IF expresion instrucciones TK_ELSE instrucciones TK_END PTOCOMA'
     t[0] = If(t[2], t[3], t[5], None, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_if_elseif(t):
-    'ins_if     : TK_IF expresion instrucciones ins_elseif TK_END '
+    'ins_if     : TK_IF expresion instrucciones ins_elseif TK_END PTOCOMA'
     t[0] = If(t[2], t[3], None, t[4], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_if_elseif2(t):
@@ -383,11 +396,11 @@ def p_if_elseif4(t):
 ########################################## ASIGNACION/DECLARACION ################################################
 
 def p_asignacion_ins(t):
-    'ins_asignacion    : ID IGUAL expresion '
+    'ins_asignacion    : ID IGUAL expresion PTOCOMA'
     t[0] = Asignacion(t[1], t[3], None, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_asignacion_ins2(t):
-    'ins_asignacion    : ID IGUAL expresion DOBLEPUNTO tipos_ins '
+    'ins_asignacion    : ID IGUAL expresion DOBLEPUNTO tipos_ins PTOCOMA'
     t[0] = Asignacion(t[1], t[3], t[5], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_tipos_ins(t):
@@ -411,11 +424,11 @@ def p_tipos_ins(t):
 ################################################ PRINT ################################################
 
 def p_print_produ(t) :
-    '''ins_print   : TK_PRINT PAROP params_call PARCLS '''
+    '''ins_print   : TK_PRINT PAROP params_call PARCLS PTOCOMA'''
     t[0] = Print(t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_println_produ(t) :
-    '''ins_println   : TK_PRINTLN PAROP params_call PARCLS '''
+    '''ins_println   : TK_PRINTLN PAROP params_call PARCLS PTOCOMA'''
     t[0] = Println(t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 ################################################ EXPRESION ################################################
@@ -503,6 +516,10 @@ def p_exp_float(t):
     '''expresion : DECIMAL'''
     t[0] = Primitivos(Tipo.FLOAT64, t[1], t.lineno(1), find_column(input, t.slice[1]))
 
+def p_exp_nothing(t):
+    '''expresion : TK_NOTHING'''
+    t[0] = Primitivos(Tipo.NOTHING, None, t.lineno(1), find_column(input, t.slice[1]))
+
 def p_expresion_identificador(t):
     '''expresion : ID'''
     t[0] = Identificador(t[1], t.lineno(1), find_column(input, t.slice[1]))
@@ -514,6 +531,11 @@ def p_primitivo_cadena(t):
 def p_primitivo_char(t):
     '''expresion : CHAR'''
     t[0] = Primitivos(Tipo.CHAR,str(t[1]).replace('\\n', '\n'), t.lineno(1), find_column(input, t.slice[1]))
+
+############################################## ACCESO ATRIBUTOS STRUCT ############################################
+def p_ins_atrib_struct(t):
+    'expresion : ID PTO ID'
+    t[0] = Llamada_atributo_struct(t[1],t[3], t.lineno(1), find_column(input, t.slice[1]) )
 
 import Interprete.ply.yacc as yacc
 parser = yacc.yacc()
@@ -543,7 +565,6 @@ def executeCode(entrada):
     ast = Arbol(instrucciones)
     TSGlobal = TablaSimbolos()
     ast.set_tabla_ts_global(TSGlobal)
-    #declararNativas(ast)
 
     for error in errores:
         ast.get_excepcion().append(error)
@@ -552,10 +573,12 @@ def executeCode(entrada):
     for instr in ast.get_instruccion():
         if isinstance(instr, Funcion):
             ast.addFuncion(instr)
+        elif isinstance(instr,Plantilla_struct):
+            ast.addPlantillaStruct(instr)
         else:
             valor = instr.interpretar(ast,TSGlobal)
             if isinstance(valor, Exception):
                 ast.get_excepcion().append(valor)
                 ast.actualizar_consola_salto(valor.__str__())
-    
-    return(ast.get_consola())
+
+        return(ast.get_consola())
