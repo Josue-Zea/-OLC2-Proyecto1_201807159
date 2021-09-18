@@ -52,6 +52,8 @@ tokens = [
     'DOBLEPUNTO',
     'DOSPTOS',
     'PTO',
+    'COROP',
+    'CORCLS',
     'COMA',
     'DECIMAL',
     'ENTERO',
@@ -84,6 +86,8 @@ t_DOBLEPUNTO    = r'\:\:'
 t_DOSPTOS       = r'\:'
 t_COMA          = r'\,'
 t_PTO           = r'\.'
+t_COROP         = r'\['
+t_CORCLS        = r'\]'
 
 def t_DECIMAL(t): # retorna un Float64.
     r'\d+\.\d+'
@@ -190,6 +194,9 @@ from Interprete.Instrucciones.Nativas import Nativas
 from Interprete.Instrucciones.For import For
 from Interprete.Instrucciones.Plantilla_struct import Plantilla_struct
 from Interprete.Instrucciones.Struct import Struct
+from Interprete.Instrucciones.Arreglo import Arreglo
+from Interprete.Instrucciones.Acceso_arreglo import Acceso_arreglo
+from Interprete.Instrucciones.Asignar_val_arreglo import Asignar_val_arreglo
 from Interprete.Instrucciones.Llamada_struct import Llamada_struct
 from Interprete.Instrucciones.Llamada_atributo_struct import Llamada_atributo_struct
 from Interprete.Instrucciones.Asignar_valor_var_struct import Asignar_valor_var_struct
@@ -237,6 +244,7 @@ def p_instruccion(t):
                     | ins_declarate_struct
                     | ins_create_struct
                     | ins_cambio_var_strct
+                    | ins_asignacion_arreglo
     '''
     t[0] = t[1]
 
@@ -245,10 +253,28 @@ def p_error(t):
     errores.append(Exception("Sintáctico","Error Sintáctico." + str(t.value), t.lineno, find_column(input, t)))
     t = ""
 
+############################################### ASIGNACION ARREGLO ################################################
+def p_ins_asignar_arreglo(t):
+    'ins_asignacion_arreglo : ID posiciones_arreglo IGUAL expresion PTOCOMA'
+    t[0] = Asignar_val_arreglo(t[1], t[2], t[4],  t.lineno(1), find_column(input, t.slice[1]))
+
+def p_posiciones_arreglo(t):
+    'posiciones_arreglo : posiciones_arreglo posiciones_arreglo'
+    t[1].append(t[2])
+    t[0] = t[1]
+
+def p_posiciones_arreglo2(t):
+    'posiciones_arreglo : position_arreglo'
+    t[0] = [t[1]]
+
+def p_posiciones_arreglo3(t):
+    'position_arreglo : COROP expresion CORCLS'
+    t[0] = t[2]
+
 ######################################### ASIGNAR VALOR A VARIABLE DE STRUCT ######################################
 
-def p_ins_cambio_var_strct(t):
-    'ins_cambio_var_strct : ID PTO ID IGUAL expresion PTOCOMA'
+def p_asignar_valor_var_struct(t):
+    'ins_cambio_var_strct : ID PTO ID expresion IGUAL expresion PTOCOMA'
     t[0] = Asignar_valor_var_struct(t[1], t[3], t[5],  t.lineno(1), find_column(input, t.slice[1]))
 
 ################################################## CREATE STRUCT ##################################################
@@ -532,6 +558,18 @@ def p_primitivo_char(t):
     '''expresion : CHAR'''
     t[0] = Primitivos(Tipo.CHAR,str(t[1]).replace('\\n', '\n'), t.lineno(1), find_column(input, t.slice[1]))
 
+################################################# CCREAR ARREGLOS ###################################################
+
+def p_declarar_arreglo(t):
+    'expresion : COROP params_call CORCLS'
+    t[0] = Arreglo(Tipo.ARRAY, t[2], t.lineno(1), find_column(input, t.slice[1]))
+
+################################################ ACCESO A ARREGLOS ################################################
+
+def p_acceso_arreglo(t):
+    '''expresion : ID posiciones_arreglo'''
+    t[0] = Acceso_arreglo(t[1], t[2], t.lineno(1), find_column(input, t.slice[1]))
+
 ############################################## ACCESO ATRIBUTOS STRUCT ############################################
 def p_ins_atrib_struct(t):
     'expresion : ID PTO ID'
@@ -581,4 +619,4 @@ def executeCode(entrada):
                 ast.get_excepcion().append(valor)
                 ast.actualizar_consola_salto(valor.__str__())
 
-        return(ast.get_consola())
+    return(ast.get_consola())

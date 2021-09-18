@@ -1,8 +1,8 @@
 from Interprete.Expresiones.Identificador import Identificador
+from Interprete.Instrucciones.Arreglo import Arreglo
 from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
-
 
 class Asignacion(Instruccion):
     def __init__(self, identificador, expresion, tipo, fila, columna):
@@ -13,9 +13,14 @@ class Asignacion(Instruccion):
         self.columna = columna
 
     def interpretar(self, tree, table):
-        valor = self.expresion.interpretar(tree, table) # Ejecutamos la expresion que venga en la asignacion
+        valor = ""
+        if isinstance(self.expresion, Arreglo):
+            self.expresion.setIdentificador(self.identificador) #Si en dado caso es un arreglo primero se le define un id al arreglo
+            valor = self.expresion.interpretar(tree, table) #Se evaluan los parametros y se guarda en el tree
+            return valor
+        else:
+            valor = self.expresion.interpretar(tree, table)
         if isinstance(valor, Exception): return valor
-        
         if self.tipo != None and self.tipo != self.expresion.tipo:
             return Exception("Semantico", "Los tipos de variables no concuerdan: "+str(self.tipo)+"!="+str(self.expresion.tipo))
         self.tipo = self.expresion.tipo
@@ -26,6 +31,5 @@ class Asignacion(Instruccion):
             var = table.setTabla(simbolo)
         else:
             var = table.actualizarTabla(simbolo)
-        
         if isinstance(var, Exception): return var
         return None

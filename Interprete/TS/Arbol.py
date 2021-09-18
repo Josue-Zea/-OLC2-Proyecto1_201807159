@@ -4,6 +4,7 @@ class Arbol():
         self.funciones = []
         self.plantillas_structs = []
         self.structs = []
+        self.arreglos = []
         self.excepcion = []
         self.consola = ""
         self.tabla_ts_global = None
@@ -73,4 +74,13 @@ class Arbol():
         for struct in self.structs:
             if struct.id == nombre:
                 return struct
+        return None
+
+    def addArreglo(self, arreglo):
+        self.arreglos.append(arreglo)
+
+    def getArreglo(self, identificador):
+        for arreglo in self.arreglos:
+            if arreglo.identificador == identificador:
+                return arreglo
         return None
