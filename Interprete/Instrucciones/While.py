@@ -5,6 +5,7 @@ from Interprete.TS.TablaSimbolos import TablaSimbolos
 from Interprete.Instrucciones.Break import Break
 from Interprete.Instrucciones.Return import Return
 from Interprete.Instrucciones.Continue import Continue
+from datetime import datetime
 
 class While(Instruccion):
     def __init__(self, condicion, instrucciones, fila, columna):
@@ -32,4 +33,4 @@ class While(Instruccion):
                 else:
                     break
             else:
-                return Exception("Semantico", "Error en while, la expresion no retorna un booleano.", self.fila, self.columna)
+                return Exception("Semantico", "Error en while, la expresion no retorna un booleano.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

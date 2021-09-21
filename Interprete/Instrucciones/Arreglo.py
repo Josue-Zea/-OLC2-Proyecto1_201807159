@@ -1,5 +1,6 @@
 from Interprete.TS.Tipo import *
 from Interprete.TS.Exception import Exception
+from datetime import datetime
 
 class Arreglo():
     def __init__(self, tipo, variables, fila, columna):
@@ -24,7 +25,7 @@ class Arreglo():
     
     def setVariable(self, posicion, valor):
         if posicion < 0 or posicion+1 > len(self.variables):
-            return Exception("Semantico", "Posicion en el areglo fuera de los limites.", self.fila, self.columna)
+            return Exception("Semantico", "Posicion en el areglo fuera de los limites.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         else:
             self.variables[posicion] = valor
             return None
@@ -43,3 +44,10 @@ class Arreglo():
 
     def get_columna(self):
         return self.columna
+    
+    def __str__(self):
+        cadena = "["
+        for i in self.variables:
+            cadena+=str(i.valor)+","
+        cadena+="]"
+        return cadena

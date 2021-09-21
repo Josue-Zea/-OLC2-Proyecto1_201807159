@@ -2,6 +2,7 @@ from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.Instrucciones.Struct import Struct
 from Interprete.TS.Tipo import Tipo
 from Interprete.TS.Exception import Exception
+from datetime import datetime
 
 class Plantilla_struct(Instruccion):
     def __init__(self, tipo, nombre, parametros, fila, columna):
@@ -13,7 +14,7 @@ class Plantilla_struct(Instruccion):
     
     def interpretar(self, nombre_struct, params, fila, columna, tree, table):
         if len(self.parametros) != len(params): # Validamos la cantidad de parametros que se envía
-            return Exception("Semantico", "La cantidad de parametros no coincide al crear el struct", self.fila, self.columna)
+            return Exception("Semantico", "La cantidad de parametros no coincide al crear el struct", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         contador=0
         temp = Struct(self.tipo, str(nombre_struct), fila, columna)
         for expresion in params: # SE OBTIENE EL VALOR DEL PARAMETRO EN LA LLAMADA
@@ -24,6 +25,6 @@ class Plantilla_struct(Instruccion):
             elif self.parametros[contador]["tipoDato"] == expresion.tipo:
                 temp.agregarVariable({"tipoDato":expresion.tipo, "identificador":str(self.parametros[contador]['identificador']),"valor":resultExpresion})
             else:
-                return Exception("Semantico", "Tipo de dato diferente en Parametros de la llamada.", self.fila, self.columna)
+                return Exception("Semantico", "Tipo de dato diferente en Parametros de la llamada.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             contador += 1
         return temp

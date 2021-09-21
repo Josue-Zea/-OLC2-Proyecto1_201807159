@@ -1,6 +1,7 @@
 
 from Interprete.TS.Exception import Exception
 from Interprete.TS.Tipo import *
+from datetime import datetime
 
 class TablaSimbolos:
     def __init__(self, anterior = None):
@@ -10,7 +11,7 @@ class TablaSimbolos:
 
     def setTabla(self, simbolo):# Para agregar un simbolo a la tabla
         if simbolo.id in self.tabla : # Si el simbolo ya existe retorna una exception
-            return Exception("Semantico", "Variable " + simbolo.id + " ya existe", simbolo.fila, simbolo.columna)
+            return Exception("Semantico", "Variable " + simbolo.id + " ya existe", simbolo.fila, simbolo.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         else: # Se agrega un nuevo simbolo
             self.tabla[simbolo.id] = simbolo
             return None
@@ -43,7 +44,7 @@ class TablaSimbolos:
                 tablaActual = tablaActual.anterior #si no encuentra el id, regresa al entorno anterior.
                 if tablaActual is None: # Condicion imprtante por si el anterior es null y no truene.
                     return None
-        return Exception("Semantico", "Variable No encontrada en Asignacion", simbolo.get_fila(), simbolo.get_columna())
+        return Exception("Semantico", "Variable No encontrada en Asignacion", simbolo.get_fila(), simbolo.get_columna(), datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
         
     

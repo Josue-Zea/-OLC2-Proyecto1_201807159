@@ -1,5 +1,6 @@
 from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
+from datetime import datetime
 
 
 class Identificador(Instruccion):
@@ -14,7 +15,7 @@ class Identificador(Instruccion):
         if simbolo == None:
             simbolo = tree.getArreglo(self.identificador)
             if simbolo == None:
-                return Exception("Semantico", "No se encontro la variable "+self.identificador+" declarada", self.fila, self.columna)
+                return Exception("Semantico", "No se encontro la variable "+self.identificador+" declarada", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             else:
              self.tipo = simbolo.tipo
              return simbolo.getVariables()

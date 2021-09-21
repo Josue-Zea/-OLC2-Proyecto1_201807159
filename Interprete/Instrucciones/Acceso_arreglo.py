@@ -4,6 +4,7 @@ from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
 from Interprete.TS.Tipo import *
+from datetime import datetime
 
 class Acceso_arreglo():
     def __init__(self, identificador, expresion, fila, columna):
@@ -16,16 +17,16 @@ class Acceso_arreglo():
     def interpretar(self, tree, table):
         arreglo = tree.getArreglo(str(self.identificador))
         if arreglo == None:
-            return Exception("Semantico", "Arreglo "+str(self.identificador)+" no declarado", self.fila, self.columna)
+            return Exception("Semantico", "Arreglo "+str(self.identificador)+" no declarado", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         posiciones = self.arreglarPosiciones(self.expresion, tree, table)
         if len(posiciones) == 1:
             if type(posiciones[0]) != int:
-                return Exception("Semantico", "La posicion de un arreglo debe ser un dato INT64.", self.fila, self.columna)
+                return Exception("Semantico", "La posicion de un arreglo debe ser un dato INT64.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             valor = arreglo.getVariable(posiciones[0])
         else:
             valor = self.obtenerVariable(arreglo, posiciones)
         if valor == None:
-            return Exception("Semantico", "Posicion en el arreglo no valida.", self.fila, self.columna)
+            return Exception("Semantico", "Posicion en el arreglo no valida.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         self.tipo = valor.tipo
         return valor.valor
 

@@ -1,5 +1,7 @@
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Exception import Exception
+from Interprete.Expresiones.Primitivos import Primitivos
+from datetime import datetime
 
 class Print(Instruccion):
     def __init__(self, expresion, fila, columna):
@@ -11,9 +13,21 @@ class Print(Instruccion):
         ins = []
         for i in self.expresion:
             value = i.interpretar(tree, tabla)
-            ins.append(value)
+            if type(value) == list:
+                ins.append(self.obtenerString(value))
+            else:
+                ins.append(value)
         for i in ins:
             if isinstance(i, Exception):
                 return i
         for i in ins:
             tree.actualizar_consola_sin_salto(i)
+    
+    def obtenerString(self, lista):
+        var = "["
+        for i in lista:
+            if isinstance(i, Primitivos):
+                var+=str(i.valor)+","
+        var = var.rstrip(var[-1])
+        var += "]"
+        return var

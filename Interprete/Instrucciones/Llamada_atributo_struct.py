@@ -3,6 +3,7 @@ from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
 from Interprete.TS.Tipo import *
+from datetime import datetime
 
 
 class Llamada_atributo_struct(Instruccion):
@@ -16,10 +17,10 @@ class Llamada_atributo_struct(Instruccion):
     def interpretar(self, tree, table):
         struct = tree.getStruct(str(self.nombre_struct))                   # OBTENER EL STRUCT
         if struct == None:
-            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no se encuentra declarado", self.fila, self.columna)
+            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no se encuentra declarado", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         atributo = struct.valor.getVariable(str(self.nombre_atributo))
         if atributo == None:
-            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no contiene un atributo: "+str(self.nombre_atributo), self.fila, self.columna)
+            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no contiene un atributo: "+str(self.nombre_atributo), self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         valor = atributo["valor"]
         if atributo["tipoDato"] == any:
             if type(valor) == int:

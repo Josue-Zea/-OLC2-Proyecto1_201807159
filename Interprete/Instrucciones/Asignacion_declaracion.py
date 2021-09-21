@@ -3,6 +3,7 @@ from Interprete.Instrucciones.Arreglo import Arreglo
 from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
+from datetime import datetime
 
 class Asignacion(Instruccion):
     def __init__(self, identificador, expresion, tipo, fila, columna):
@@ -24,7 +25,7 @@ class Asignacion(Instruccion):
                 valor = tree.getArreglo(self.identificador)
         if isinstance(valor, Exception): return valor
         if self.tipo != None and self.tipo != self.expresion.tipo:
-            return Exception("Semantico", "Los tipos de variables no concuerdan: "+str(self.tipo)+"!="+str(self.expresion.tipo))
+            return Exception("Semantico", "Los tipos de variables no concuerdan: "+str(self.tipo)+"!="+str(self.expresion.tipo), datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         self.tipo = self.expresion.tipo
         var = ""
         simb = table.getTabla(self.identificador)

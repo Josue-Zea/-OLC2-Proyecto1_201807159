@@ -5,6 +5,7 @@ from Interprete.TS.TablaSimbolos import TablaSimbolos
 from Interprete.Instrucciones.Break import Break
 from Interprete.Instrucciones.Return import Return
 from Interprete.Instrucciones.Continue import Continue
+from datetime import datetime
 
 class If(Instruccion):
     def __init__(self, condicion, instruccionesIf, instruccionesElse, ElseIf, fila, columna):
@@ -49,7 +50,7 @@ class If(Instruccion):
                     if isinstance(result, Continue): return result
 
         else:
-            return Exception("Semantico", "La expresion a evaluar en el if debe devolver true o false", self.fila, self.columna)
+            return Exception("Semantico", "La expresion a evaluar en el if debe devolver true o false", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     def getNodo(self):
         nodo = NodoAST("IF")

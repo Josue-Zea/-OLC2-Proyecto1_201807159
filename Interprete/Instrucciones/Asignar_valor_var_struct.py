@@ -3,6 +3,7 @@ from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
 from Interprete.TS.Tipo import *
+from datetime import datetime
 
 
 class Asignar_valor_var_struct(Instruccion):
@@ -18,12 +19,12 @@ class Asignar_valor_var_struct(Instruccion):
         if isinstance(expresion,Exception): return expresion
         struct = tree.getStruct(str(self.nombre_struct))                        # OBTENER EL STRUCT
         if struct == None:
-            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no se encuentra declarado", self.fila, self.columna)
+            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no se encuentra declarado", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         if struct.valor.tipo == 0:
-            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" es inmutable", self.fila, self.columna)
+            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" es inmutable", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         atributo = struct.valor.getVariable(str(self.nombre_atributo))
         if atributo == None:
-            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no contiene un atributo: "+str(self.nombre_atributo), self.fila, self.columna)
+            return Exception("Semantico", "El struct: "+str(self.nombre_struct)+" no contiene un atributo: "+str(self.nombre_atributo), self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         if atributo["tipoDato"] == any:
             atributo["valor"] = expresion
         else:
@@ -41,5 +42,5 @@ class Asignar_valor_var_struct(Instruccion):
             if atributo["tipoDato"] == tipe:
                 atributo["valor"] = expresion
             else:
-                return Exception("Semantico", "El atributo enviado al struct no es del tipo adecuado", self.fila, self.columna)
+                return Exception("Semantico", "El atributo enviado al struct no es del tipo adecuado", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         return None

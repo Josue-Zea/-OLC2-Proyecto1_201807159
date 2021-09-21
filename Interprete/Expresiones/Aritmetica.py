@@ -1,6 +1,7 @@
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Exception import Exception
 from Interprete.TS.Tipo import Tipo, Operador_Aritmetico
+from datetime import datetime
 
 class Aritmetica(Instruccion):
     def __init__(self, operador, OperacionIzq, OperacionDer, fila, columna):
@@ -32,7 +33,7 @@ class Aritmetica(Instruccion):
                 self.tipo = Tipo.FLOAT64
                 return self.returnVal(self.OperacionIzq.tipo, izq) + self.returnVal(self.OperacionDer.tipo, der)
 
-            return Exception("Semantico", "Tipos erroneos en operación suma.", self.fila, self.columna)
+            return Exception("Semantico", "Tipos erroneos en operación suma.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
         elif self.operador == Operador_Aritmetico.RESTA:
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
@@ -48,7 +49,7 @@ class Aritmetica(Instruccion):
                 self.tipo = Tipo.FLOAT64
                 return self.returnVal(self.OperacionIzq.tipo, izq) - self.returnVal(self.OperacionDer.tipo, der) 
             
-            return Exception("Semantico", "Tipos erroneos en operación resta.", self.fila, self.columna)
+            return Exception("Semantico", "Tipos erroneos en operación resta.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Aritmetico.MULTIPLICACION:
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
@@ -68,31 +69,31 @@ class Aritmetica(Instruccion):
                 var = self.returnVal(self.OperacionIzq.tipo, izq)
                 var += self.returnVal(self.OperacionDer.tipo, der)
                 return var
-            return Exception("Semantico", "Tipos erroneos en operación multiplicación.", self.fila, self.columna)
+            return Exception("Semantico", "Tipos erroneos en operación multiplicación.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Aritmetico.DIVISION:
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) / self.returnVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) / self.returnVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.INT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) / self.returnVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible dividir entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) / self.returnVal(self.OperacionDer.tipo, der)
             
-            return Exception("Semantico", "Tipos erroneos en operación división.", self.fila, self.columna)
+            return Exception("Semantico", "Tipos erroneos en operación división.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
         elif self.operador == Operador_Aritmetico.POTENCIA:
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
@@ -114,31 +115,31 @@ class Aritmetica(Instruccion):
                 for i in range(self.returnVal(self.OperacionDer.tipo, der)):
                     res+=var
                 return res
-            return Exception("Semantico", "Tipos erroneos en operación potencia.", self.fila, self.columna)
+            return Exception("Semantico", "Tipos erroneos en operación potencia.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
         elif self.operador == Operador_Aritmetico.MODULO:
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) % self.returnVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) % self.returnVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.INT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) % self.returnVal(self.OperacionDer.tipo, der) 
             elif self.OperacionIzq.tipo == Tipo.FLOAT64 and self.OperacionDer.tipo == Tipo.FLOAT64:
                 self.tipo = Tipo.FLOAT64
                 if self.returnVal(self.OperacionDer.tipo, der) == 0:  
-                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna)
+                    return Exception("Semantico", "No es posible mod entre cero", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 return self.returnVal(self.OperacionIzq.tipo, izq) % self.returnVal(self.OperacionDer.tipo, der)
             
-            return Exception("Semantico", "Tipos erroneos en operación modulo.", self.fila, self.columna)
+            return Exception("Semantico", "Tipos erroneos en operación modulo.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Aritmetico.UMENOS:
             if self.OperacionIzq.tipo == Tipo.INT64:
@@ -148,9 +149,9 @@ class Aritmetica(Instruccion):
                 self.tipo = Tipo.FLOAT64
                 return - self.returnVal(self.OperacionIzq.tipo, izq)
             
-            return Exception("Semantico", "Acción erronea en operador unario -.", self.fila, self.columna)
+            return Exception("Semantico", "Acción erronea en operador unario -.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
-        return Exception("Semantico", "Tipo de Operacion no Especificado.", self.fila, self.columna)
+        return Exception("Semantico", "Tipo de Operacion no Especificado.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     def returnVal(self, tipo, val):
         if tipo == Tipo.INT64:

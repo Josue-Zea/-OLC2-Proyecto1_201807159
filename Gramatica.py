@@ -1,4 +1,5 @@
 from Interprete.TS.Exception import Exception
+from datetime import datetime
 import re
 import os
 errores = []
@@ -26,7 +27,9 @@ reservadas = {
     'in'        : 'TK_IN',
     'struct'    : 'TK_STRUCT',
     'mutable'   : 'TK_MUTABLE',
-    'nothing'   : 'TK_NOTHING'
+    'nothing'   : 'TK_NOTHING',
+    'global'    : 'TK_GLOBAL',
+    'local'     : 'TK_LOCAL'
 }
 
 tokens = [
@@ -134,12 +137,12 @@ def t_CHAR(t): # es un caracter.
     t.value = t.value.replace("\\'", '\'')
     return t
 
-# comentario de varias lineas //...
+# comentario de varias lineas
 def t_COMENTARIO_VARIAS_LINEAS(t):
     r'\#=(.|\n)*?=\#'
     t.lexer.lineno += t.value.count("\n") 
 
-# Comentario simple //...
+# Comentario simple
 def t_COMENTARIO_SIMPLE(t):
     r'\#.*\n'
     t.lexer.lineno += 1
@@ -152,7 +155,7 @@ def t_newline(t):
     t.lexer.lineno += t.value.count("\n")
     
 def t_error(t):
-    errores.append(Exception("Lexico","Error lexico." + t.value[0], t.lexer.lineno, find_column(input, t)))
+    errores.append(Exception("Lexico","Error lexico." + t.value[0], t.lexer.lineno, find_column(input, t), datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
     t.lexer.skip(1)
 
 # Compute column.
@@ -250,7 +253,7 @@ def p_instruccion(t):
 
 def p_error(t):
     'instruccion : error PTOCOMA'
-    errores.append(Exception("Sintáctico","Error Sintáctico." + str(t.value), t.lineno, find_column(input, t)))
+    errores.append(Exception("Sintáctico","Error Sintáctico." + str(t.value), t.lineno, find_column(input, t), datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
     t = ""
 
 ############################################### ASIGNACION ARREGLO ################################################
@@ -370,8 +373,12 @@ def p_params_parametro(t) :
     t[0] = [t[1]]
 
 def p_parametro(t) :
-    'param     : ID DOBLEPUNTO tipos_ins'
-    t[0] = {'tipoDato':t[3],'identificador':t[1]}
+    '''param     : ID DOBLEPUNTO tipos_ins
+                | ID'''
+    if len(t) == 4:
+        t[0] = {'tipoDato':t[3],'identificador':t[1]}
+    elif len(t) == 2:
+        t[0] = {'tipoDato':any,'identificador':t[1]}
 
 ################################################# RETURN #########################################################
 

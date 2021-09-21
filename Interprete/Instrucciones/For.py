@@ -7,6 +7,7 @@ from Interprete.Instrucciones.Arreglo import Arreglo
 from Interprete.Instrucciones.Break import Break
 from Interprete.Instrucciones.Return import Return
 from Interprete.Instrucciones.Continue import Continue
+from datetime import datetime
 
 class For(Instruccion):
     def __init__(self, identificador, izquierdo, derecho, instrucciones,  fila, columna):
@@ -28,13 +29,13 @@ class For(Instruccion):
         if type(self.izquierdo) == list and self.derecho == None: # Cuando se envia un arreglo de esta forma arr[a:b]
             arr = tree.getArreglo(self.izquierdo[0])
             if arr == None:
-                return Exception("Semantico", "No se encuentra declarado  el arreglo.", self.fila, self.columna)
+                return Exception("Semantico", "No se encuentra declarado  el arreglo.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             arr = arr.getVariables()
             simbolo = nuevo.getTabla(self.identificador)
             condicion1 = self.izquierdo[1].interpretar(tree, table)
             condicion2 = self.izquierdo[2].interpretar(tree, table)
             if type(condicion1) != int or type(condicion2) != int:
-                return Exception("Semantico", "Rangos no validos en bucle for.", self.fila, self.columna)
+                return Exception("Semantico", "Rangos no validos en bucle for.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             if simbolo == None:
                 simbolo = Simbolo(str(self.identificador), arr[condicion1].tipo, self.fila, self.columna, condicion1)
                 resultado = nuevo.setTabla(simbolo)
@@ -127,10 +128,9 @@ class For(Instruccion):
                 return None
 
             elif type(condicion1) == list and self.derecho==None:
-                print("Condicion1")
                 simbolo = nuevo.getTabla(self.identificador)
                 if simbolo == None:
-                    simbolo = Simbolo(str(self.identificador), var.tipo, self.fila, self.columna, condicion1)
+                    simbolo = Simbolo(str(self.identificador), condicion1[0].tipo, self.fila, self.columna, condicion1)
                     resultado = nuevo.setTabla(simbolo)
                 aux = condicion1;
                 for var in condicion1:
@@ -150,4 +150,4 @@ class For(Instruccion):
                 return None
             
             else:
-                return Exception("Semantico", "Rangos no validos en bucle for.", self.fila, self.columna)
+                return Exception("Semantico", "Rangos no validos en bucle for.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
