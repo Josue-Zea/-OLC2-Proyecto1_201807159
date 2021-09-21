@@ -239,7 +239,7 @@ def p_instruccion(t):
                     | ins_while
                     | ins_asignacion
                     | ins_decla_funcion
-                    | ins_llamada_funcion
+                    | ins_llamada_funcion PTOCOMA
                     | ins_for
                     | ins_declarate_struct
                     | ins_create_struct
@@ -314,11 +314,14 @@ def p_params_struct3(t) :
 
 def p_instr_for1(t):
     '''ins_for : TK_FOR ID TK_IN expresion DOSPTOS expresion instrucciones TK_END PTOCOMA
-                | TK_FOR ID TK_IN expresion instrucciones TK_END PTOCOMA'''
-    if len(t) == 9:
+                | TK_FOR ID TK_IN expresion instrucciones TK_END PTOCOMA
+                | TK_FOR ID TK_IN ID COROP expresion DOSPTOS expresion CORCLS instrucciones TK_END PTOCOMA'''
+    if len(t) == 10:
         t[0] = For(t[2], t[4], t[6], t[7],  t.lineno(1), find_column(input, t.slice[1]))
-    elif len(t) == 7:
+    elif len(t) == 8:
         t[0] = For(t[2], t[4], None, t[5],  t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 13:
+        t[0] = For(t[2], [t[4],t[6],t[8]],None, t[10],  t.lineno(1), find_column(input, t.slice[1]))
 
 ############################################## LLAMADA DE FUNCIONES ###############################################
 
@@ -327,7 +330,7 @@ def p_llamada_de_funcion(t) :
     t[0] = Llamada(t[1], [], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_llamada_de_funcion_parametros(t) :
-    'ins_llamada_funcion     : ID PAROP params_call PARCLS PTOCOMA'
+    'ins_llamada_funcion     : ID PAROP params_call PARCLS'
     if t[1] == 'log' or t[1] =='log10' or t[1] =='sin' or t[1] == 'cos'or t[1] =='tan'or t[1] =='sqrt'or t[1] =='parse'or t[1] =='trunc'or t[1] =='float'or t[1] =='string' or t[1] =='push'or t[1] =='pop'or t[1] =='length' or t[1] =='typeof' or t[1] =='uppercase' or t[1] =='lowercase':
         t[0] = Nativas(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
     else:

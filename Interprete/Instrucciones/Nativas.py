@@ -1,5 +1,6 @@
 import math as ma
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Expresiones.Identificador import Identificador
 from Interprete.TS.Exception import Exception
 from Interprete.TS.TablaSimbolos import TablaSimbolos
 from Interprete.Instrucciones.Break import Break
@@ -94,19 +95,22 @@ class Nativas(Instruccion):
             return result
 
         elif self.nombre == 'trunc':
-            if len(self.parametros) != 2:
-                return Exception("Semantico", "Se esperaban 2 parametros en funcion nativa trunc", self.fila, self.columna)
-            tipoFinal = self.parametros[0]
-            if not(isinstance(tipoFinal,Tipo)):
-                return Exception("Semantico", "Se esperaba un tipo de dato en funcion nativa trunc", self.fila, self.columna)
-            valor = self.parametros[1].interpretar(tree, table)
+            if len(self.parametros) != 2 and len(self.parametros) != 1:
+                return Exception("Semantico", "Cantidad de parametros no valida en trunc", self.fila, self.columna)
+            #tipoFinal = self.parametros[0]
+            #if not(isinstance(tipoFinal,Tipo)):
+            #    return Exception("Semantico", "Se esperaba un tipo de dato en funcion nativa trunc", self.fila, self.columna)
+            if len(self.parametros) == 2:
+                valor = self.parametros[1].interpretar(tree, table)
+            else:
+                valor = self.parametros[0].interpretar(tree, table)
             if not(type(valor) == float):
                 return Exception("Semantico", "Solo se pueden truncar FLOAT64", self.fila, self.columna)
-            if tipoFinal == Tipo.INT64:
-                result =  round(valor)
-                self.tipo = Tipo.INT64
-            else:
-                return Exception("Semantico", "Solo se puede truncar a entero", self.fila, self.columna)
+            #if tipoFinal == Tipo.INT64:
+            result =  round(valor)
+            self.tipo = Tipo.INT64
+            #else:
+            #    return Exception("Semantico", "Solo se puede truncar a entero", self.fila, self.columna)
             return result
 
         elif self.nombre == 'string':
@@ -153,3 +157,13 @@ class Nativas(Instruccion):
             if result == "":
                 return Exception("Semantico", "No se encontro referencia al parametro en funcion nativa:  "+self.nombre, self.fila, self.columna)
             return result
+
+        elif self.nombre == 'length':
+            if type(self.parametros[0]) != Identificador:
+                return Exception("Semantico", "Parametros invalidos en funcion nativa LENGTH, debe enviar un identificador", self.fila, self.columna)
+            arreglo = tree.getArreglo(self.parametros[0].identificador)
+            if arreglo == None:
+                return Exception("Semantico", "No se encontró el arreglo "+self.nombre+" declarado", self.fila, self.columna)
+            variables = arreglo.getVariables()
+            self.tipo = Tipo.INT64
+            return len(variables)

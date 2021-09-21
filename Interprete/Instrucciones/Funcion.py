@@ -13,7 +13,7 @@ class Funcion(Instruccion):
         self.instrucciones = instrucciones
         self.fila = fila
         self.columna = columna
-        self.tipo = Tipo.NULO
+        self.tipo = Tipo.NOTHING
     
     def interpretar(self, tree, table):
         nuevaTabla = TablaSimbolos(table) 

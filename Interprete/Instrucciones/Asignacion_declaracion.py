@@ -20,6 +20,8 @@ class Asignacion(Instruccion):
             return valor
         else:
             valor = self.expresion.interpretar(tree, table)
+            if isinstance(valor,Exception):
+                valor = tree.getArreglo(self.identificador)
         if isinstance(valor, Exception): return valor
         if self.tipo != None and self.tipo != self.expresion.tipo:
             return Exception("Semantico", "Los tipos de variables no concuerdan: "+str(self.tipo)+"!="+str(self.expresion.tipo))

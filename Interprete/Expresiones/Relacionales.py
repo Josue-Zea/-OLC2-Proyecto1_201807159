@@ -108,6 +108,8 @@ class Relacional(Instruccion):
 
         elif self.operador == Operador_Relacional.MAYQ:
             # INT
+            print(self.OperacionIzq.tipo)
+            print(self.OperacionDer.tipo)
             if self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.INT64:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) > self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.INT64 and self.OperacionDer.tipo == Tipo.FLOAT64:

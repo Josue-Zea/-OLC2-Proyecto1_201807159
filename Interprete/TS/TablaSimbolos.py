@@ -39,7 +39,6 @@ class TablaSimbolos:
                     tablaActual.tabla[simbolo.id].set_valor(simbolo.get_valor())
                     tablaActual.tabla[simbolo.id].set_tipo(simbolo.get_tipo())
                     return None
-                ##return Exception("Semantico", "Tipo de dato Diferente en Asignacion", simbolo.get_fila(), simbolo.get_columna())
             else:
                 tablaActual = tablaActual.anterior #si no encuentra el id, regresa al entorno anterior.
                 if tablaActual is None: # Condicion imprtante por si el anterior es null y no truene.

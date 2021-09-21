@@ -28,6 +28,9 @@ class Arreglo():
         else:
             self.variables[posicion] = valor
             return None
+    
+    def getVariables(self):
+        return self.variables
 
     def setIdentificador(self, identificador):
         self.identificador = identificador
