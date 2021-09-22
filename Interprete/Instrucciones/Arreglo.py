@@ -52,3 +52,8 @@ class Arreglo():
             cadena+=str(i.valor)+","
         cadena+="]"
         return cadena
+    
+    def getNodo(self):
+        nodo = NodoAst("ARREGLO")
+        nodo.agregarHijo(self.__str__())
+        return nodo

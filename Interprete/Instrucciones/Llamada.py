@@ -29,7 +29,6 @@ class Llamada(Instruccion):
                 if isinstance(resultExpresion, Exception): 
                     tree.removeAmbito()
                     return resultExpresion
-                
                 if result.parametros[contador]["tipoDato"] == expresion.tipo or result.parametros[contador]["tipoDato"] == any:  # VERIFICACION DE TIPO 
                     tipe = ""
                     if type(resultExpresion) == int:
@@ -43,7 +42,7 @@ class Llamada(Instruccion):
                     elif type(resultExpresion) == str:
                         tipe = Tipo.STRING
                     simbolo = Simbolo(str(result.parametros[contador]['identificador']), tipe, self.fila, self.columna, resultExpresion, tree.getAmbito())
-                    tree.agregarVariable([str(self.nombre), tipe, tree.getAmbito(), str(self.fila),str(self.columna)])
+                    tree.agregarVariable([str(result.parametros[contador]['identificador']), tipe, tree.getAmbito(), str(self.fila),str(self.columna)])
                     resultTabla = nuevaTabla.setTabla(simbolo)
                     if isinstance(resultTabla, Exception):
                         tree.removeAmbito()
@@ -56,7 +55,6 @@ class Llamada(Instruccion):
         else: 
             tree.removeAmbito()
             return Exception("Semantico", "El numero de parametros enviado no coincide con los que recibe la funcion.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    
         value = result.interpretar(tree, nuevaTabla)         # INTERPRETAR EL NODO FUNCION
         if isinstance(value, Exception):
             tree.removeAmbito()
@@ -64,3 +62,12 @@ class Llamada(Instruccion):
         self.tipo = result.tipo
         tree.removeAmbito()
         return value
+
+    def getNodo(self):
+        nodo = NodoAst("LLAMADA A FUNCION")
+        nodo.agregarHijo(str(self.nombre))
+        parametros = NodoAst("PARAMETROS")
+        for param in self.parametros:
+            parametros.agregarHijoNodo(param.getNodo())
+        nodo.agregarHijoNodo(parametros)
+        return nodo

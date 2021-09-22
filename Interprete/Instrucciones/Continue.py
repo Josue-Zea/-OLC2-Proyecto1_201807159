@@ -11,3 +11,7 @@ class Continue(Instruccion):
 
     def interpretar(self, tree, table):
         return self
+
+    def getNodo(self):
+        nodo = NodoAst("CONTINUE")
+        return nodo

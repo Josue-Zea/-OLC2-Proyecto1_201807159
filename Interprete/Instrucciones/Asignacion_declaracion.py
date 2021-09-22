@@ -38,3 +38,11 @@ class Asignacion(Instruccion):
             var = table.actualizarTabla(simbolo)
         if isinstance(var, Exception): return var
         return None
+
+    def getNodo(self):
+        nodo = NodoAst("ASIGNACION")
+        nodo.agregarHijo(str(self.identificador))
+        nodo.agregarHijoNodo(self.expresion.getNodo())
+        if self.tipo != None:
+            nodo.agregarHijo(str(self.tipo))
+        return nodo

@@ -44,3 +44,12 @@ class While(Instruccion):
             else:
                 tree.removeAmbito()
                 return Exception("Semantico", "Error en while, la expresion no retorna un booleano.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+    def getNodo(self):
+        nodo = NodoAst("WHILE")
+        nodo.agregarHijoNodo(self.condicion.getNodo())
+        instrucciones = NodoAst("INSTRUCCIONES")
+        for instr in self.instrucciones:
+            instrucciones.agregarHijoNodo(instr.getNodo())
+        nodo.agregarHijoNodo(instrucciones)
+        return nodo

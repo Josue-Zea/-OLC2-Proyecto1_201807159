@@ -433,8 +433,13 @@ def p_if_elseif4(t):
 ########################################## ASIGNACION/DECLARACION ################################################
 
 def p_asignacion_ins(t):
-    'ins_asignacion    : ID IGUAL expresion PTOCOMA'
-    t[0] = Asignacion(t[1], t[3], None, t.lineno(1), find_column(input, t.slice[1]))
+    '''ins_asignacion    : ID IGUAL expresion PTOCOMA
+                        | TK_GLOBAL ID IGUAL expresion PTOCOMA
+                        | TK_LOCAL ID IGUAL expresion PTOCOMA'''
+    if len(t) == 5:
+        t[0] = Asignacion(t[1], t[3], None, t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 6:
+        t[0] = Asignacion(t[2], t[4], None, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_asignacion_ins2(t):
     'ins_asignacion    : ID IGUAL expresion DOBLEPUNTO tipos_ins PTOCOMA'

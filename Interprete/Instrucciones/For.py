@@ -8,6 +8,8 @@ from Interprete.Instrucciones.Arreglo import Arreglo
 from Interprete.Instrucciones.Break import Break
 from Interprete.Instrucciones.Return import Return
 from Interprete.Instrucciones.Continue import Continue
+from Interprete.Expresiones.Primitivos import Primitivos
+from Interprete.Expresiones.Identificador import Identificador
 from datetime import datetime
 
 class For(Instruccion):
@@ -204,3 +206,22 @@ class For(Instruccion):
             else:
                 tree.removeAmbito()
                 return Exception("Semantico", "Rangos no validos en bucle for.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+    def getNodo(self):
+        nodo = NodoAst("FOR")
+        nodo.agregarHijoNodo(NodoAst(self.identificador))
+        instrucciones = NodoAst("INSTRUCCIONES")
+        for instruccion in self.instrucciones:
+            instrucciones.agregarHijoNodo(instruccion.getNodo())
+        nodo.agregarHijoNodo(instrucciones)
+        if isinstance(self.izquierdo, Primitivos) and isinstance(self.derecho, Primitivos):
+            nodo.agregarHijoNodo(NodoAst(self.izquierdo.valor))
+            nodo.agregarHijoNodo(NodoAst(":"))
+            nodo.agregarHijoNodo(NodoAst(self.derecho.valor))
+        elif isinstance(self.izquierdo, Primitivos) and self.derecho == None:
+            nodo.agregarHijoNodo(NodoAst(self.izquierdo.valor))
+        elif isinstance(self.izquierdo, Identificador) and self.derecho == None:
+            nodo.agregarHijoNodo(NodoAst(str(self.izquierdo.identificador)))
+        elif isinstance(self.izquierdo, Arreglo) and self.derecho == None:
+            nodo.agregarHijoNodo(NodoAst("ARREGLO"))
+        return nodo

@@ -2,6 +2,7 @@ import math as ma
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.Expresiones.Identificador import Identificador
+from Interprete.Expresiones.Primitivos import Primitivos
 from Interprete.TS.Exception import Exception
 from Interprete.TS.TablaSimbolos import TablaSimbolos
 from Interprete.Instrucciones.Break import Break
@@ -163,3 +164,15 @@ class Nativas(Instruccion):
             variables = arreglo.getVariables()
             self.tipo = Tipo.INT64
             return len(variables)
+    
+    def getNodo(self):
+        nodo = NodoAst("FUNCION NATIVA")
+        nodo.agregarHijo(str(self.nombre))
+        parametros = NodoAst("PARAMETROS")
+        for param in self.parametros:
+            if isinstance(param, Identificador):
+                parametros.agregarHijoNodo(NodoAst(str(param.identificador)))
+            elif isinstance(param, Primitivos):
+                parametros.agregarHijoNodo(NodoAst(str(param.valor)))
+        nodo.agregarHijoNodo(parametros)
+        return nodo

@@ -15,8 +15,11 @@ class Return(Instruccion):
     def interpretar(self, tree, table):
         result = self.expresion.interpretar(tree, table)
         if isinstance(result, Exception): return result
-
-        self.tipo = self.expresion.tipo # Aqui va a guardar el tipo de la expresion a interpretar.
-        self.result = result            # Aqui ya optiene el resultado de la expresion a interpretar.
-
+        self.tipo = self.expresion.tipo
+        self.result = result
         return self
+
+    def getNodo(self):
+        nodo = NodoAst("RETURN")
+        nodo.agregarHijoNodo(self.expresion.getNodo())
+        return nodo

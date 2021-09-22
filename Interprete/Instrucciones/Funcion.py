@@ -37,3 +37,19 @@ class Funcion(Instruccion):
                 self.tipo = value.tipo
                 return value.result
         return None
+    
+    def getNodo(self):
+        nodo = NodoAst("FUNCION")
+        nodo.agregarHijo(str(self.nombre))
+        parametros = NodoAst("PARAMETROS")
+        for param in self.parametros:
+            parametro = NodoAst("PARAMETRO")
+            parametro.agregarHijo(param["tipoDato"])
+            parametro.agregarHijo(param["identificador"])
+            parametros.agregarHijoNodo(parametro)
+        nodo.agregarHijoNodo(parametros)
+        instrucciones = NodoAst("INSTRUCCIONES")
+        for instruccion in self.instrucciones:
+            instrucciones.agregarHijoNodo(instruccion.getNodo())
+        nodo.agregarHijoNodo(instrucciones)
+        return nodo

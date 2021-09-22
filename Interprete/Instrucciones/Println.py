@@ -35,6 +35,7 @@ class Println(Instruccion):
         return var
     
     def getNodo(self):
-        nodo = NodoAst("IMPRIMIR")
-        nodo.agregarHijoNodo(self.expresion.getNodo())
+        nodo = NodoAst("PRINTLN")
+        for exp in self.expresion:
+            nodo.agregarHijoNodo(exp.getNodo())
         return nodo

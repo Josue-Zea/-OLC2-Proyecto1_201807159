@@ -54,19 +54,18 @@ class If(Instruccion):
             return Exception("Semantico", "La expresion a evaluar en el if debe devolver true o false", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     def getNodo(self):
-        nodo = NodoAST("IF")
+        nodo = NodoAst("IF")
         nodo.agregarHijoNodo(self.condicion.getNodo())
-        instruccionesIf = NodoAST("INSTRUCCIONES IF")
+        instruccionesIf = NodoAst("INSTRUCCIONES IF")
         for instr in self.instruccionesIf:
             instruccionesIf.agregarHijoNodo(instr.getNodo())
         nodo.agregarHijoNodo(instruccionesIf)
 
         if self.instruccionesElse != None:
-            instruccionesElse = NodoAST("INSTRUCCIONES ELSE")
+            instruccionesElse = NodoAst("INSTRUCCIONES ELSE")
             for instr in self.instruccionesElse:
                 instruccionesElse.agregarHijoNodo(instr.getNodo())
             nodo.agregarHijoNodo(instruccionesElse) 
         elif self.elseIf != None:
             nodo.agregarHijoNodo(self.elseIf.getNodo())
-
         return nodo

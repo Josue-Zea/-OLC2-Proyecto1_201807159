@@ -11,3 +11,7 @@ class Break(Instruccion):
 
     def interpretar(self, tree, table):
         return self
+    
+    def getNodo(self):
+        nodo = NodoAst("BREAK")
+        return nodo

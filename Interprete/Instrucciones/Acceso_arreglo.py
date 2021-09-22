@@ -50,3 +50,8 @@ class Acceso_arreglo():
             if valor == None:
                 return None
         return valor
+
+    def getNodo(self):
+        nodo = NodoAst("ASIGNAR VALOR ARREGLO")
+        nodo.agregarHijo(str(self.identificador))
+        return nodo
