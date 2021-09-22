@@ -1,5 +1,6 @@
 from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from datetime import datetime
 
 
@@ -22,3 +23,8 @@ class Identificador(Instruccion):
         else:
             self.tipo = simbolo.get_tipo()
             return simbolo.get_valor()
+    
+    def getNodo(self):
+        nodo = NodoAst("IDENTIFICADOR")
+        nodo.agregarHijo(str(self.identificador))
+        return nodo

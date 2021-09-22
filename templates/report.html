@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+</head>
+<body>
+    <form action="/" method="POST">
+        <a href="/compiler"><h5>Volver</h5></a><br></>
+    </form>
+    <hr>
+    <center><h1 class="text-info">Reporte Ast</h1></center>
+    <center>
+        <div>
+            {{codigo|safe}}
+        </div>
+    </center>
+</body>
+</html>

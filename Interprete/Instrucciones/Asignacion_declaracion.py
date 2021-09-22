@@ -4,6 +4,7 @@ from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
 from datetime import datetime
+from Interprete.Abstract.NodoAst import NodoAst
 
 class Asignacion(Instruccion):
     def __init__(self, identificador, expresion, tipo, fila, columna):
@@ -29,8 +30,9 @@ class Asignacion(Instruccion):
         self.tipo = self.expresion.tipo
         var = ""
         simb = table.getTabla(self.identificador)
-        simbolo = Simbolo(str(self.identificador),self.expresion.tipo, self.fila, self.columna, valor)
+        simbolo = Simbolo(str(self.identificador),self.expresion.tipo, self.fila, self.columna, valor, tree.getAmbito())
         if simb == None:
+            tree.agregarVariable([str(self.identificador), str(self.expresion.tipo), tree.getAmbito(), str(self.fila),str(self.columna)])
             var = table.setTabla(simbolo)
         else:
             var = table.actualizarTabla(simbolo)

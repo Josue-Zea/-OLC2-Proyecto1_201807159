@@ -1,4 +1,5 @@
 from Interprete.Expresiones.Identificador import Identificador
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo

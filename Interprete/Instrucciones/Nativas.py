@@ -1,5 +1,6 @@
 import math as ma
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.Expresiones.Identificador import Identificador
 from Interprete.TS.Exception import Exception
 from Interprete.TS.TablaSimbolos import TablaSimbolos

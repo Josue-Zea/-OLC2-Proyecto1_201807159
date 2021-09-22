@@ -1,4 +1,5 @@
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.Instrucciones.Struct import Struct
 from Interprete.TS.Tipo import Tipo
 from Interprete.TS.Exception import Exception

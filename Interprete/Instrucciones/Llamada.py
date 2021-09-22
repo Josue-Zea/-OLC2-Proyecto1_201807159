@@ -1,4 +1,5 @@
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Exception import Exception
 from Interprete.TS.TablaSimbolos import TablaSimbolos
 from Interprete.Instrucciones.Break import Break
@@ -15,15 +16,19 @@ class Llamada(Instruccion):
         self.columna = columna
     
     def interpretar(self, tree, table):
+        tree.setAmbito(str(self.nombre))
         result = tree.getFuncion(self.nombre)       # Buscamos la funcion entre la pila que contiene el tree
         if result == None:
+            tree.removeAmbito()
             return Exception("Semantico", "No existe una funcionn con ese nombre: " + self.nombre, self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         nuevaTabla = TablaSimbolos(tree.get_tabla_ts_global())
         if len(result.parametros) == len(self.parametros): #LA CANTIDAD DE PARAMETROS ES LA ADECUADA
             contador=0
             for expresion in self.parametros: # SE OBTIENE EL VALOR DEL PARAMETRO EN LA LLAMADA
                 resultExpresion = expresion.interpretar(tree, table)
-                if isinstance(resultExpresion, Exception): return resultExpresion
+                if isinstance(resultExpresion, Exception): 
+                    tree.removeAmbito()
+                    return resultExpresion
                 
                 if result.parametros[contador]["tipoDato"] == expresion.tipo or result.parametros[contador]["tipoDato"] == any:  # VERIFICACION DE TIPO 
                     tipe = ""
@@ -37,19 +42,25 @@ class Llamada(Instruccion):
                         tipe = Tipo.CHAR
                     elif type(resultExpresion) == str:
                         tipe = Tipo.STRING
-                    # CREACION DE SIMBOLO E INGRESARLO A LA TABLA DE SIMBOLOS
-                    simbolo = Simbolo(str(result.parametros[contador]['identificador']), tipe, self.fila, self.columna, resultExpresion)
+                    simbolo = Simbolo(str(result.parametros[contador]['identificador']), tipe, self.fila, self.columna, resultExpresion, tree.getAmbito())
+                    tree.agregarVariable([str(self.nombre), tipe, tree.getAmbito(), str(self.fila),str(self.columna)])
                     resultTabla = nuevaTabla.setTabla(simbolo)
-                    if isinstance(resultTabla, Exception): return resultTabla
+                    if isinstance(resultTabla, Exception):
+                        tree.removeAmbito()
+                        return resultTabla
                     
                 else:
+                    tree.removeAmbito()
                     return Exception("Semantico", "Tipo de dato diferente en Parametros de la llamada.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 contador += 1
         else: 
+            tree.removeAmbito()
             return Exception("Semantico", "El numero de parametros enviado no coincide con los que recibe la funcion.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     
         value = result.interpretar(tree, nuevaTabla)         # INTERPRETAR EL NODO FUNCION
-        if isinstance(value, Exception): return value
+        if isinstance(value, Exception):
+            tree.removeAmbito()
+            return value
         self.tipo = result.tipo
-        
+        tree.removeAmbito()
         return value

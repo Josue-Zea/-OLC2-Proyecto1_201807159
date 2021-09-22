@@ -6,6 +6,8 @@ class Arbol():
         self.structs = []
         self.arreglos = []
         self.excepcion = []
+        self.tablaFinal = []
+        self.ambitoActual = ["Global"]
         self.consola = ""
         self.tabla_ts_global = None
 
@@ -77,6 +79,7 @@ class Arbol():
         return None
 
     def addArreglo(self, arreglo):
+        self.agregarVariable([str(arreglo.identificador), str(arreglo.tipo), "Global", str(arreglo.fila),str(arreglo.columna)])
         self.arreglos.append(arreglo)
 
     def getArreglo(self, identificador):
@@ -84,3 +87,19 @@ class Arbol():
             if arreglo.identificador == identificador:
                 return arreglo
         return None
+
+    def getAmbito(self):
+        return self.ambitoActual[len(self.ambitoActual)-1]
+    
+    def setAmbito(self, ambito):
+        self.ambitoActual.append(ambito)
+    
+    def removeAmbito(self):
+        self.ambitoActual.pop()
+    
+    def agregarVariable(self, variable):
+        variable[1]=str(variable[1]).replace("Tipo.","")
+        self.tablaFinal.append(variable)
+
+    def getTablaSimbolos(self):
+        return self.tablaFinal

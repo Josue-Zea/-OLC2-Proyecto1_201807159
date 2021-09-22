@@ -1,4 +1,5 @@
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Exception import Exception
 from Interprete.TS.Tipo import Tipo, Operador_Relacional
 from datetime import datetime
@@ -53,7 +54,7 @@ class Relacional(Instruccion):
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.NOTHING and self.OperacionDer.tipo == Tipo.NOTHING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
-            return Exception("Semantico", "Tipo Erroneo de operacion para ==.", self.fila, self.columna)
+            return Exception("Semantico", "Tipo Erroneo de operacion para ==.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Relacional.DIFERENCIA:
             # INT
@@ -89,7 +90,7 @@ class Relacional(Instruccion):
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.NOTHING or self.OperacionDer.tipo == Tipo.NOTHING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
-            return Exception("Semantico", "Tipo Erroneo de operacion para =!.", self.fila, self.columna)
+            return Exception("Semantico", "Tipo Erroneo de operacion para =!.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Relacional.MENQ:
             # INT
@@ -105,7 +106,7 @@ class Relacional(Instruccion):
             # BOOLEAN
             elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) < self.obtenerVal(self.OperacionDer.tipo, der)
-            return Exception("Semantico", "Tipo Erroneo de operacion para <.", self.fila, self.columna)
+            return Exception("Semantico", "Tipo Erroneo de operacion para <.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Relacional.MAYQ:
             # INT
@@ -121,7 +122,7 @@ class Relacional(Instruccion):
             # BOOLEAN
             elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) > self.obtenerVal(self.OperacionDer.tipo, der)
-            return Exception("Semantico", "Tipo Erroneo de operacion para >.", self.fila, self.columna)
+            return Exception("Semantico", "Tipo Erroneo de operacion para >.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
         elif self.operador == Operador_Relacional.MENEQUALS:
             # INT
@@ -137,7 +138,7 @@ class Relacional(Instruccion):
             # BOOLEAN
             elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) <= self.obtenerVal(self.OperacionDer.tipo, der)
-            return Exception("Semantico", "Tipo Erroneo de operacion para <=.", self.fila, self.columna)
+            return Exception("Semantico", "Tipo Erroneo de operacion para <=.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
         elif self.operador == Operador_Relacional.MAYEQUALS:
             # INT
@@ -153,9 +154,9 @@ class Relacional(Instruccion):
             # BOOLEAN
             elif self.OperacionIzq.tipo == Tipo.BOOLEANO and self.OperacionDer.tipo == Tipo.BOOLEANO:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) >= self.obtenerVal(self.OperacionDer.tipo, der)
-            return Exception("Semantico", "Tipo Erroneo de operacion para >.", self.fila, self.columna)
+            return Exception("Semantico", "Tipo Erroneo de operacion para >.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-        return Exception("Semantico", "Tipo de Operacion no Especificado.", self.fila, self.columna)
+        return Exception("Semantico", "Tipo de Operacion no Especificado.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     def obtenerVal(self, tipo, val):
         if tipo == Tipo.INT64:
@@ -165,3 +166,11 @@ class Relacional(Instruccion):
         elif tipo == Tipo.BOOLEANO:
             return bool(val)
         return str(val)
+
+    def getNodo(self):
+        nodo = NodoAst("RELACIONAL")
+        nodo.agregarHijoNodo(self.OperacionIzq.getNodo())
+        nodo.agregarHijo(str(self.operador))
+        nodo.agregarHijoNodo(self.OperacionDer.getNodo())
+        
+        return nodo

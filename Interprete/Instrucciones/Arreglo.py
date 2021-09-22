@@ -1,6 +1,7 @@
 from Interprete.TS.Tipo import *
 from Interprete.TS.Exception import Exception
 from datetime import datetime
+from Interprete.Abstract.NodoAst import NodoAst
 
 class Arreglo():
     def __init__(self, tipo, variables, fila, columna):

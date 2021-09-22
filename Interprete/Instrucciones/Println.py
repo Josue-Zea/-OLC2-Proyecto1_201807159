@@ -1,4 +1,5 @@
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Tipo import *
 from Interprete.TS.Exception import Exception
 from Interprete.Expresiones.Primitivos import Primitivos
@@ -32,3 +33,8 @@ class Println(Instruccion):
         var = var.rstrip(var[-1])
         var += "]"
         return var
+    
+    def getNodo(self):
+        nodo = NodoAst("IMPRIMIR")
+        nodo.agregarHijoNodo(self.expresion.getNodo())
+        return nodo

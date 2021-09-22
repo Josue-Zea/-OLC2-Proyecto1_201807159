@@ -1,9 +1,10 @@
 from Interprete.TS.Exception import Exception
+from Interprete.Abstract.Reportes import *
 from datetime import datetime
+from Interprete.Abstract.NodoAst import NodoAst
 import re
 import os
 errores = []
-structs = []
 reservadas = {
     'print'     : 'TK_PRINT',
     'println'   : 'TK_PRINTLN',
@@ -613,13 +614,14 @@ def executeCode(entrada):
     ast = Arbol(instrucciones)
     TSGlobal = TablaSimbolos()
     ast.set_tabla_ts_global(TSGlobal)
-
+    fails = []
     for error in errores:
         ast.get_excepcion().append(error)
-        ast.actualizar_consola_salto(error.__str__())
-
+        fails.append([str(valor.tipo), str(valor.descripcion), str(valor.fila), str(valor.columna), str(valor.tiempo)])
+    consola = []
     for instr in ast.get_instruccion():
         if isinstance(instr, Funcion):
+            ast.agregarVariable([str(instr.nombre), str("Funcion"), "Global", str(instr.fila),str(instr.columna)])
             ast.addFuncion(instr)
         elif isinstance(instr,Plantilla_struct):
             ast.addPlantillaStruct(instr)
@@ -627,6 +629,13 @@ def executeCode(entrada):
             valor = instr.interpretar(ast,TSGlobal)
             if isinstance(valor, Exception):
                 ast.get_excepcion().append(valor)
-                ast.actualizar_consola_salto(valor.__str__())
-
-    return(ast.get_consola())
+                fails.append([str(valor.tipo), str(valor.descripcion), str(valor.fila), str(valor.columna), str(valor.tiempo)])
+    consola = ast.get_consola()
+    
+    init = NodoAst("RAIZ")
+    instr = NodoAst("INSTRUCCIONES")
+    for instruccion in ast.get_instruccion():
+        instr.agregarHijoNodo(instruccion.getNodo())
+    init.agregarHijoNodo(instr)
+    final = [consola, fails, ast.getTablaSimbolos(), generarAST(init)]
+    return final

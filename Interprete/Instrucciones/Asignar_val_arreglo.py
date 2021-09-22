@@ -1,6 +1,7 @@
 from Interprete.Expresiones.Identificador import Identificador
 from Interprete.Instrucciones.Arreglo import Arreglo
 from Interprete.TS.Exception import Exception
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
 from Interprete.Expresiones.Primitivos import Primitivos

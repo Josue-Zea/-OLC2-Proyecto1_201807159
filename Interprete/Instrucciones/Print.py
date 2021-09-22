@@ -1,7 +1,9 @@
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Exception import Exception
 from Interprete.Expresiones.Primitivos import Primitivos
 from datetime import datetime
+from Interprete.Abstract.NodoAst import NodoAst
 
 class Print(Instruccion):
     def __init__(self, expresion, fila, columna):
@@ -31,3 +33,9 @@ class Print(Instruccion):
         var = var.rstrip(var[-1])
         var += "]"
         return var
+    
+    def getNodo(self):
+        nodo = NodoAst("IMPRIMIR")
+        for exp in self.expresion:
+            nodo.agregarHijoNodo(exp.getNodo())
+        return nodo

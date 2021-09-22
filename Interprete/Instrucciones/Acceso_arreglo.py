@@ -5,6 +5,7 @@ from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
 from Interprete.TS.Tipo import *
 from datetime import datetime
+from Interprete.Abstract.NodoAst import NodoAst
 
 class Acceso_arreglo():
     def __init__(self, identificador, expresion, fila, columna):

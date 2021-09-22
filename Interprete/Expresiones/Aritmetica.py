@@ -1,4 +1,5 @@
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Exception import Exception
 from Interprete.TS.Tipo import Tipo, Operador_Aritmetico
 from datetime import datetime
@@ -161,3 +162,14 @@ class Aritmetica(Instruccion):
         elif tipo == Tipo.BOOLEANO:
             return bool(val)
         return str(val)
+
+    def getNodo(self):
+        nodo = NodoAst("ARITMETICA")
+        if self.OperacionDer != None:
+            nodo.agregarHijoNodo(self.OperacionIzq.getNodo())
+            nodo.agregarHijo(str(self.operador))
+            nodo.agregarHijoNodo(self.OperacionDer.getNodo())
+        else:
+            nodo.agregarHijo(str(self.operador))
+            nodo.agregarHijoNodo(self.OperacionIzq.getNodo())
+        return nodo

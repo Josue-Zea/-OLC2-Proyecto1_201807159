@@ -1,37 +1,61 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css">
-    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
-    <style>
-        textarea {
-            resize: none;
-        }
-    </style>
-    {{ codemirror.include_codemirror() }}
-</head>
-<body>
-    <hr>
-    <div class="row">
-        <div class="col-md-6">
-            <h6>Editor</h6>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&amp;display=swap"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&amp;display=swap" media="print" onload="this.media='all'"/>
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&amp;display=swap"/>
+    </noscript>
+    <link href="{{url_for('static',filename='bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='font-awesome/css/all.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='main.css')}}" rel="stylesheet">
+  </head>
+  <body id="top"><div class="site-wrapper">
+  <div class="site-wrapper-inner">
+    <div class="cover-container">
+      <div class="masthead clearfix">
+        <div class="inner">
+          <h3 class="masthead-brand">201807159</h3>
         </div>
-        <div class="col-md-6">
-            <h6>Consola</h6>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <form action="/" method="POST">
-                {{ form.source_code }}
-                <input type="submit" class="btn btn-primary btn-block" value="Compilar">
-            </form>
-        </div>
-        <div class="col-md-6">
-            <div class="jumbotron">
-                <textarea id="Fuente" rows="12" cols="78" wrap='off' spellcheck="false" readonly>{{salida}}</textarea>
+      </div>      
+      <div class="inner cover">
+        <h1 class="cover-heading">Josué David Zea Herrera</h1>
+        <p class="lead cover-copy">Organización de lenguajes y compiladores 2, proyecto 1 JOLC</p>
+        <form action="/" method="POST">
+            <a href="/compiler"><h1>Iniciemos</h1></a><br></>
+        </form>
+      </div>
+      <div class="modal fade" id="subscribeModal" tabindex="-1" role="dialog" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="subscribeModalLabel">Get Notified on Launch:</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="recipient-name" class="form-control-label">Enter you e-mail to get notified when we launch</label>
+                  <input type="text" class="form-control" id="recipient-name" placeholder="your-name@example.com">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default">Subscribe</button>
+            </div>
+          </div>
         </div>
     </div>
-</body>
+  </div>
+</div>
+    <script src="scripts/jquery.slim.min.js?ver=1.2.0"></script>
+    <script src="scripts/bootstrap.bundle.min.js?ver=1.2.0"></script>
+    <script src="scripts/main.js?ver=1.2.0"></script>
+  </body>
 </html>

@@ -3,6 +3,7 @@ from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
 from Interprete.TS.Simbolo import Simbolo
 from Interprete.TS.Tipo import *
+from Interprete.Abstract.NodoAst import NodoAst
 from datetime import datetime
 
 

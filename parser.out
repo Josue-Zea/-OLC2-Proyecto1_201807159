@@ -1,5 +1,10 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
+Unused terminals:
+
+    TK_GLOBAL
+    TK_LOCAL
+
 Grammar
 
 Rule 0     S' -> init
@@ -140,9 +145,11 @@ TK_FALSE             : 85
 TK_FLOAT64           : 59
 TK_FOR               : 31 32 33
 TK_FUNCTION          : 40 41
+TK_GLOBAL            : 
 TK_IF                : 50 51 52
 TK_IN                : 31 32 33
 TK_INT64             : 58
+TK_LOCAL             : 
 TK_MUTABLE           : 26
 TK_NOTHING           : 87
 TK_PRINT             : 63
