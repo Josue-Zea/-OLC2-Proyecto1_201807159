@@ -3,7 +3,7 @@ class Arbol():
         self.instruccion = instruccion
         self.funciones = []
         self.plantillas_structs = []
-        self.structs = []
+        #self.structs = []
         self.arreglos = []
         self.excepcion = []
         self.tablaFinal = []
@@ -66,17 +66,7 @@ class Arbol():
                 return struct
         return None
     
-    def addStruct(self, struct):
-        self.structs.append(struct)
 
-    def get_structs(self):
-        return self.structs
-
-    def getStruct(self, nombre):
-        for struct in self.structs:
-            if struct.id == nombre:
-                return struct
-        return None
 
     def addArreglo(self, arreglo):
         self.agregarVariable([str(arreglo.identificador), str(arreglo.tipo), "Global", str(arreglo.fila),str(arreglo.columna)])
@@ -103,3 +93,15 @@ class Arbol():
 
     def getTablaSimbolos(self):
         return self.tablaFinal
+    
+    """    def addStruct(self, struct):
+        self.structs.append(struct)
+
+    def getStruct(self, nombre):
+        for struct in self.structs:
+            if struct.nombre == nombre:
+                return struct
+        return None
+    
+    def get_structs(self):
+        return self.structs"""

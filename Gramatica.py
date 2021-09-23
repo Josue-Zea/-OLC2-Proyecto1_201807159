@@ -246,9 +246,8 @@ def p_instruccion(t):
                     | ins_llamada_funcion PTOCOMA
                     | ins_for
                     | ins_declarate_struct
-                    | ins_create_struct
-                    | ins_cambio_var_strct
                     | ins_asignacion_arreglo
+                    | ins_cambio_var_strct
     '''
     t[0] = t[1]
 
@@ -278,14 +277,8 @@ def p_posiciones_arreglo3(t):
 ######################################### ASIGNAR VALOR A VARIABLE DE STRUCT ######################################
 
 def p_asignar_valor_var_struct(t):
-    'ins_cambio_var_strct : ID PTO ID expresion IGUAL expresion PTOCOMA'
+    'ins_cambio_var_strct : ID PTO ID IGUAL expresion PTOCOMA'
     t[0] = Asignar_valor_var_struct(t[1], t[3], t[5],  t.lineno(1), find_column(input, t.slice[1]))
-
-################################################## CREATE STRUCT ##################################################
-
-def p_instr_create_struct(t):
-    'ins_create_struct : ID IGUAL ID PAROP params_call PARCLS PTOCOMA'
-    t[0] = Llamada_struct(t[1], t[3], t[5] , t.lineno(1), find_column(input, t.slice[1]))
 
 ################################################# DECLARATE STRUCT ################################################
 
@@ -308,6 +301,7 @@ def p_params_struct2(t) :
 
 def p_params_struct3(t) :
     '''param_struct     : ID DOBLEPUNTO tipos_ins PTOCOMA
+                        | ID DOBLEPUNTO ID PTOCOMA
                         | ID PTOCOMA'''
     if len(t) == 5:
         t[0] = {'tipoDato':t[3],'identificador':t[1]}
@@ -330,7 +324,7 @@ def p_instr_for1(t):
 ############################################## LLAMADA DE FUNCIONES ###############################################
 
 def p_llamada_de_funcion(t) :
-    'ins_llamada_funcion     : ID PAROP PARCLS PTOCOMA'
+    'ins_llamada_funcion     : ID PAROP PARCLS'
     t[0] = Llamada(t[1], [], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_llamada_de_funcion_parametros(t) :
@@ -375,11 +369,12 @@ def p_params_parametro(t) :
 
 def p_parametro(t) :
     '''param     : ID DOBLEPUNTO tipos_ins
+                | ID DOBLEPUNTO ID
                 | ID'''
     if len(t) == 4:
-        t[0] = {'tipoDato':t[3],'identificador':t[1]}
+        t[0] = {'tipoDato':t[3],'identificador':t[1], 'auxiliar':None}
     elif len(t) == 2:
-        t[0] = {'tipoDato':any,'identificador':t[1]}
+        t[0] = {'tipoDato':any,'identificador':t[1], 'auxiliar':None}
 
 ################################################# RETURN #########################################################
 
@@ -462,6 +457,8 @@ def p_tipos_ins(t):
         t[0] = Tipo.STRING
     elif t[1] == 'Char':
         t[0] = Tipo.CHAR
+    else:
+        t[0] = t[1]
 
 ################################################ PRINT ################################################
 
@@ -589,7 +586,15 @@ def p_acceso_arreglo(t):
 ############################################## ACCESO ATRIBUTOS STRUCT ############################################
 def p_ins_atrib_struct(t):
     'expresion : ID PTO ID'
-    t[0] = Llamada_atributo_struct(t[1],t[3], t.lineno(1), find_column(input, t.slice[1]) )
+    t[0] = Llamada_atributo_struct(t[1],[t[3]], t.lineno(1), find_column(input, t.slice[1]) )
+
+def p_ins_atrib_struct1(t):
+    'expresion : ID PTO ID PTO ID'
+    t[0] = Llamada_atributo_struct(t[1],[t[3], t[5]], t.lineno(1), find_column(input, t.slice[1]) )
+
+def p_ins_atrib_struct2(t):
+    'expresion : ID PTO ID PTO ID PTO ID'
+    t[0] = Llamada_atributo_struct(t[1],[t[3], t[5], t[7]], t.lineno(1), find_column(input, t.slice[1]) )
 
 import Interprete.ply.yacc as yacc
 parser = yacc.yacc()
@@ -622,8 +627,9 @@ def executeCode(entrada):
     fails = []
     for error in errores:
         ast.get_excepcion().append(error)
-        fails.append([str(valor.tipo), str(valor.descripcion), str(valor.fila), str(valor.columna), str(valor.tiempo)])
+        fails.append([str(error.tipo), str(error.descripcion), str(error.fila), str(error.columna), str(error.tiempo)])
     consola = []
+    
     for instr in ast.get_instruccion():
         if isinstance(instr, Funcion):
             ast.agregarVariable([str(instr.nombre), str("Funcion"), "Global", str(instr.fila),str(instr.columna)])

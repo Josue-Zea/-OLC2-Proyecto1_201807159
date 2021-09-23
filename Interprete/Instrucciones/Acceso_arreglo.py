@@ -1,4 +1,7 @@
 from Interprete.Expresiones.Identificador import Identificador
+from Interprete.Expresiones.Logicas import Logica
+from Interprete.Expresiones.Relacionales import Relacional
+from Interprete.Expresiones.Aritmetica import Aritmetica
 from Interprete.Instrucciones.Arreglo import Arreglo
 from Interprete.TS.Exception import Exception
 from Interprete.Abstract.Instruccion import Instruccion
@@ -28,6 +31,45 @@ class Acceso_arreglo():
             valor = self.obtenerVariable(arreglo, posiciones)
         if valor == None:
             return Exception("Semantico", "Posicion en el arreglo no valida.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        if isinstance(valor, Aritmetica):
+            valor = valor.interpretar(tree, table)
+            if type(valor) == int:
+                self.tipo = Tipo.INT64
+            elif type(valor) == float:
+                self.tipo = Tipo.FLOAT64
+            elif type(valor) == bool:
+                self.tipo = Tipo.BOOLEANO
+            elif type(valor) == str and len(valor) == 1:
+                self.tipo = Tipo.CHAR
+            elif type(valor) == str:
+                self.tipo = Tipo.STRING
+            return valor
+        elif isinstance(valor, Logica):
+            valor = valor.interpretar(tree, table)
+            if type(valor) == int:
+                self.tipo = Tipo.INT64
+            elif type(valor) == float:
+                self.tipo = Tipo.FLOAT64
+            elif type(valor) == bool:
+                self.tipo = Tipo.BOOLEANO
+            elif type(valor) == str and len(valor) == 1:
+                self.tipo = Tipo.CHAR
+            elif type(valor) == str:
+                self.tipo = Tipo.STRING
+            return valor
+        elif isinstance(valor, Relacional):
+            valor = valor.interpretar(tree, table)
+            if type(valor) == int:
+                self.tipo = Tipo.INT64
+            elif type(valor) == float:
+                self.tipo = Tipo.FLOAT64
+            elif type(valor) == bool:
+                self.tipo = Tipo.BOOLEANO
+            elif type(valor) == str and len(valor) == 1:
+                self.tipo = Tipo.CHAR
+            elif type(valor) == str:
+                self.tipo = Tipo.STRING
+            return valor
         self.tipo = valor.tipo
         return valor.valor
 

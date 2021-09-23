@@ -160,7 +160,7 @@ class Nativas(Instruccion):
                 return Exception("Semantico", "Parametros invalidos en funcion nativa LENGTH, debe enviar un identificador", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             arreglo = tree.getArreglo(self.parametros[0].identificador)
             if arreglo == None:
-                return Exception("Semantico", "No se encontró el arreglo "+self.nombre+" declarado", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                return Exception("Semantico", "No se encontró el arreglo "+self.parametros[0].identificador+" declarado", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             variables = arreglo.getVariables()
             self.tipo = Tipo.INT64
             return len(variables)

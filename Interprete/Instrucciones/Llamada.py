@@ -3,6 +3,8 @@ from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Exception import Exception
 from Interprete.TS.TablaSimbolos import TablaSimbolos
 from Interprete.Instrucciones.Break import Break
+from Interprete.Instrucciones.Struct import Struct
+from Interprete.Instrucciones.Plantilla_struct import Plantilla_struct
 from Interprete.TS.Simbolo import Simbolo
 from Interprete.TS.Tipo import *
 from Interprete.Instrucciones.Funcion import Funcion
@@ -14,13 +16,18 @@ class Llamada(Instruccion):
         self.parametros = parametros
         self.fila = fila
         self.columna = columna
+        self.tipo = None
     
     def interpretar(self, tree, table):
         tree.setAmbito(str(self.nombre))
         result = tree.getFuncion(self.nombre)       # Buscamos la funcion entre la pila que contiene el tree
         if result == None:
-            tree.removeAmbito()
-            return Exception("Semantico", "No existe una funcionn con ese nombre: " + self.nombre, self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            result = tree.getPlantillaStruct(self.nombre)
+            if result == None:
+                tree.removeAmbito()
+                return Exception("Semantico", "No existe una funcionn con ese nombre: " + self.nombre, self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        if isinstance(result, Plantilla_struct):
+            return self.crearStruct(result, tree, table)
         nuevaTabla = TablaSimbolos(tree.get_tabla_ts_global())
         if len(result.parametros) == len(self.parametros): #LA CANTIDAD DE PARAMETROS ES LA ADECUADA
             contador=0
@@ -29,7 +36,10 @@ class Llamada(Instruccion):
                 if isinstance(resultExpresion, Exception): 
                     tree.removeAmbito()
                     return resultExpresion
-                if result.parametros[contador]["tipoDato"] == expresion.tipo or result.parametros[contador]["tipoDato"] == any:  # VERIFICACION DE TIPO 
+                if isinstance(resultExpresion, Simbolo):
+                    if isinstance(resultExpresion.valor, Struct):
+                        simbolo = Simbolo(str(result.parametros[contador]['identificador']), Tipo.STRUCT, self.fila, self.columna, resultExpresion.get_valor(), tree.getAmbito())
+                elif result.parametros[contador]["tipoDato"] == expresion.tipo or result.parametros[contador]["tipoDato"] == any:  # VERIFICACION DE TIPO 
                     tipe = ""
                     if type(resultExpresion) == int:
                         tipe = Tipo.INT64
@@ -47,7 +57,6 @@ class Llamada(Instruccion):
                     if isinstance(resultTabla, Exception):
                         tree.removeAmbito()
                         return resultTabla
-                    
                 else:
                     tree.removeAmbito()
                     return Exception("Semantico", "Tipo de dato diferente en Parametros de la llamada.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -71,3 +80,10 @@ class Llamada(Instruccion):
             parametros.agregarHijoNodo(param.getNodo())
         nodo.agregarHijoNodo(parametros)
         return nodo
+    
+    def crearStruct(self, plantilla, tree, table):
+        temp = plantilla.interpretar(None, self.parametros, self.fila, self.columna, tree, table)
+        if isinstance(temp,Exception): return temp
+        #simbolo = Simbolo(temp, Tipo.STRUCT, self.fila, self.columna, temp, tree.getAmbito())
+        self.tipo = Tipo.STRUCT
+        return temp

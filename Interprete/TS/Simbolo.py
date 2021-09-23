@@ -38,4 +38,4 @@ class Simbolo():
         self.valor = valor
 
     def __str__(self):
-        return self.id + "-" + self.tipo + "-[" + self.fila + "," + self.columna +"]-" + self.valor
+        return str(self.id) + "-" + str(self.tipo) + "-[" + str(self.fila) + "," + str(self.columna) +"]-" + str/self.valor()

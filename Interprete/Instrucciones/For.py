@@ -1,4 +1,5 @@
 from Interprete.Abstract.Instruccion import Instruccion
+from Interprete.Expresiones.Aritmetica import Aritmetica
 from Interprete.Abstract.NodoAst import NodoAst
 from Interprete.TS.Exception import Exception
 from Interprete.TS.Tipo import Tipo
@@ -203,6 +204,13 @@ class For(Instruccion):
                 tree.removeAmbito()
                 return None
             
+            elif isinstance(self.izquierdo, Aritmetica) or isinstance(self.derecho, Aritmetica):
+                self.izquierdo = self.izquierdo.interpretar(tree, table)
+                self.derecho = self.derecho.interpretar(tree, table)
+                print(self.izquierdo)
+                print(self.derecho)
+                return None
+
             else:
                 tree.removeAmbito()
                 return Exception("Semantico", "Rangos no validos en bucle for.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

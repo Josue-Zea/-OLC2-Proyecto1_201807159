@@ -19,10 +19,10 @@ class Llamada_struct(Instruccion):
         result = tree.getPlantillaStruct(self.nombre_struct)                    # Obtener la plantilla de struct
         if result == None:                                                      # No se encontró la plantilla de struct
             return Exception("Semantico", "No existe un struct declarado con ese nombre: " + self.nombre, self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        temp = result.interpretar(str(self.nombre_struct),self.parametros, self.fila, self.columna, tree, table)
+        temp = result.interpretar(str(self.identificador),self.parametros, self.fila, self.columna, tree, table)
         if isinstance(temp,Exception): return temp
-        simbolo = Simbolo(str(self.identificador),Tipo.STRUCT, self.fila, self.columna, temp, tree.getAmbito())
+        simbolo = Simbolo(str(self.identificador), Tipo.STRUCT, self.fila, self.columna, temp, tree.getAmbito())
         tree.agregarVariable([str(self.identificador), Tipo.STRUCT, "Global", str(self.fila),str(self.columna)])
-        var = tree.addStruct(simbolo)
+        var = table.setTabla(simbolo)
         if isinstance(var, Exception): return var
         return None

@@ -52,8 +52,13 @@ class Relacional(Instruccion):
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.STRING and self.OperacionDer.tipo == Tipo.STRING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
+            # NOTHING
             elif self.OperacionIzq.tipo == Tipo.NOTHING and self.OperacionDer.tipo == Tipo.NOTHING:
-                return self.obtenerVal(self.OperacionIzq.tipo, izq) == self.obtenerVal(self.OperacionDer.tipo, der)
+                return True
+            elif self.OperacionIzq.tipo == Tipo.NOTHING:
+                return False
+            elif self.OperacionDer.tipo == Tipo.NOTHING:
+                return False
             return Exception("Semantico", "Tipo Erroneo de operacion para ==.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Relacional.DIFERENCIA:
@@ -90,6 +95,13 @@ class Relacional(Instruccion):
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
             elif self.OperacionIzq.tipo == Tipo.NOTHING or self.OperacionDer.tipo == Tipo.NOTHING:
                 return self.obtenerVal(self.OperacionIzq.tipo, izq) != self.obtenerVal(self.OperacionDer.tipo, der)
+            # NOTHING
+            elif self.OperacionIzq.tipo == Tipo.NOTHING and self.OperacionDer.tipo == Tipo.NOTHING:
+                return False
+            elif self.OperacionIzq.tipo == Tipo.NOTHING:
+                return True
+            elif self.OperacionDer.tipo == Tipo.NOTHING:
+                return True
             return Exception("Semantico", "Tipo Erroneo de operacion para =!.", self.fila, self.columna,  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         elif self.operador == Operador_Relacional.MENQ:

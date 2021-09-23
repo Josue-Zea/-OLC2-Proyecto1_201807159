@@ -29,3 +29,12 @@ class Plantilla_struct(Instruccion):
                 return Exception("Semantico", "Tipo de dato diferente en Parametros de la llamada.", self.fila, self.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             contador += 1
         return temp
+    
+    def getNodo(self):
+        nodo = NodoAst("CREAR STRUCT")
+        nodo.agregarHijo(str(self.nombre))
+        parametros = NodoAst("PARAMETROS")
+        for param in self.parametros:
+            parametros.agregarHijo(str(param["identificador"]))
+        nodo.agregarHijoNodo(parametros)
+        return nodo

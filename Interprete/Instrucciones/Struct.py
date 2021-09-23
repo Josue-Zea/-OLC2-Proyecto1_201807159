@@ -28,5 +28,8 @@ class Struct():
                 return variable
         return None
 
+    def getVariables(self):
+        return self.variables
+
     def __str__(self):
-        return self.nombre + "-" + str(self.tipo) + "-[" + str(self.fila) + "," + str(self.columna) +"]-"
+        return str(self.nombre) + "-" + str(self.tipo) + "-[" + str(self.fila) + "," + str(self.columna) +"]-"
