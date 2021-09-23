@@ -9,29 +9,29 @@ class TablaSimbolos:
         self.anterior = anterior
         self.funciones = []
 
-    def setTabla(self, simbolo):# Para agregar un simbolo a la tabla
-        if simbolo.id in self.tabla : # Si el simbolo ya existe retorna una exception
+    def setTabla(self, simbolo)
+        if simbolo.id in self.tabla :
             return Exception("Semantico", "Variable " + simbolo.id + " ya existe", simbolo.fila, simbolo.columna, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        else: # Se agrega un nuevo simbolo
+        else:
             self.tabla[simbolo.id] = simbolo
             return None
 
-    def getTabla(self, id):# Esta funcion se encarga de buscar el simbolo en el diccionario.
-        tablaActual = self # Se posiciona en la cabeza.
-        while tablaActual.tabla != None: # revisa si esta vacio y si no... entra al while.
-            if id in tablaActual.tabla : # verifica si id se encuentra en la tabla, si lo encuentra retorna el id.
+    def getTabla(self, id):
+        tablaActual = self
+        while tablaActual.tabla != None:
+            if id in tablaActual.tabla :
                 return tablaActual.tabla[id]
             else:
-                tablaActual = tablaActual.anterior #  si no encuentra el id, regresa al entorno anterior.
-                if tablaActual is None: # Si se llega al null es el entorno global entonces sale
+                tablaActual = tablaActual.anterior 
+                if tablaActual is None: 
                     return None
         return None
 
-    def actualizarTabla(self, simbolo): # Esta funcion se encarga de actualizar el valor del simbolo.
-        tablaActual = self # Se posiciona en la cabeza.
+    def actualizarTabla(self, simbolo):
+        tablaActual = self
         while tablaActual != None:
-            if simbolo.id in tablaActual.tabla : # Si el simbolo lo encuentra lo va actualizar con sus sets.
-                if tablaActual.tabla[simbolo.id].get_tipo() == simbolo.get_tipo(): # aca si son del mismo tiempo lo cambia.
+            if simbolo.id in tablaActual.tabla :
+                if tablaActual.tabla[simbolo.id].get_tipo() == simbolo.get_tipo():
                     tablaActual.tabla[simbolo.id].set_valor(simbolo.get_valor())
                     tablaActual.tabla[simbolo.id].set_tipo(simbolo.get_tipo())
                     return None
@@ -41,8 +41,8 @@ class TablaSimbolos:
                     tablaActual.tabla[simbolo.id].set_tipo(simbolo.get_tipo())
                     return None
             else:
-                tablaActual = tablaActual.anterior #si no encuentra el id, regresa al entorno anterior.
-                if tablaActual is None: # Condicion imprtante por si el anterior es null y no truene.
+                tablaActual = tablaActual.anterior
+                if tablaActual is None:
                     return None
         return Exception("Semantico", "Variable No encontrada en Asignacion", simbolo.get_fila(), simbolo.get_columna(), datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
