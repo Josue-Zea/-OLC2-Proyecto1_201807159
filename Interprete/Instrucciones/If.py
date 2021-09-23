@@ -20,21 +20,21 @@ class If(Instruccion):
     def interpretar(self, tree, table):
         condicion = self.condicion.interpretar(tree, table)
         if isinstance(condicion, Exception): return condicion
-        if self.condicion.tipo == Tipo.BOOLEANO: # Debe venir un true o false
-            if bool(condicion) == True:          # Si la condicion es verdadera se ejecuta sino pasa
-                nuevaTabla = TablaSimbolos(table)       # Se inicia con el primer Ambito.
+        if self.condicion.tipo == Tipo.BOOLEANO:
+            if bool(condicion) == True:
+                nuevaTabla = TablaSimbolos(table)
                 for instrIF in self.instruccionesIf:
-                    result = instrIF.interpretar(tree, nuevaTabla) # Inicia ejecutando las instrucciones adentro del If.
+                    result = instrIF.interpretar(tree, nuevaTabla)
                     if isinstance(result, Exception):
                         tree.get_excepcion().append(result)
                         tree.update_consola(result.__str__())
                     if isinstance(result, Break): return result
                     if isinstance(result, Return): return result
                     if isinstance(result, Continue): return result
-            else:                                          # Si no se cumplle la condicion verificamos en el else
-                if self.instruccionesElse != None: # Aqui se ejecuta las instrucciones del else.
-                    nuevaTabla = TablaSimbolos(table)       # Se creal el nuevo Ambito.
-                    for instrElse in self.instruccionesElse:  # Inicia ejecutando las instrucciones adentro del else.
+            else:
+                if self.instruccionesElse != None:
+                    nuevaTabla = TablaSimbolos(table)
+                    for instrElse in self.instruccionesElse:
                         result = instrElse.interpretar(tree, nuevaTabla) 
                         if isinstance(result, Exception) :
                             tree.get_excepcion().append(result)
@@ -43,7 +43,7 @@ class If(Instruccion):
                         if isinstance(result, Return): return result
                         if isinstance(result, Continue): return result
 
-                elif self.elseIf != None:   # Aqui se ejecuta las instrucciones del else if.
+                elif self.elseIf != None:
                     result = self.elseIf.interpretar(tree, table) 
                     if isinstance(result, Exception): return result
                     if isinstance(result, Break): return result
